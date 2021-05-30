@@ -12,3 +12,11 @@ dapr run --components-path ./components/actors --app-id demoactorservice --app-p
 % following:
 
 dapr run --components-path ./components/actors --app-id demoactorclient -- java -jar target/spring-boot-0.0.1-SNAPSHOT.jar com.example.wdm.demo.DemoActorClient
+
+---------------------------
+what you supposed to see:
+server side:
+print("service:create user")
+
+client side
+print("client:create user")
