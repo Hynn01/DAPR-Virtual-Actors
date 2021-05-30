@@ -1,4 +1,4 @@
-package com.example.wdm.controller;
+package com.example.wdm.order;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

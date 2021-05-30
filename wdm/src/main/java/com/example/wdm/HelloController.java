@@ -1,4 +1,4 @@
-package com.example.wdm.controller;
+package com.example.wdm;
 
 import io.dapr.client.DaprClient;
 import io.dapr.client.DaprClientBuilder;
