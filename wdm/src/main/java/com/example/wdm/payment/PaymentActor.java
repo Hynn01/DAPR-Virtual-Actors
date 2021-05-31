@@ -21,13 +21,13 @@ public interface PaymentActor {
   Mono<String> createUser();
 
   @ActorMethod(returns = String.class)
-  Mono<Integer> findUser();
+  Mono<String> findUser();
 
   @ActorMethod(returns = String.class)
-  Mono<Integer> postPayment(int amount);
+  Mono<String> postPayment(int amount);
 
   @ActorMethod(returns = String.class)
-  Mono<Integer> addFunds(int amount);
+  Mono<String> addFunds(int amount);
 
   @ActorMethod(returns = String.class)
   Mono<String> cancelPayment(String user_id, String order_id);

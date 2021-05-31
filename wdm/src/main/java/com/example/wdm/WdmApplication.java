@@ -58,7 +58,9 @@ public class WdmApplication {
     public static void main(String[] args) throws Exception {
         String[] arguments;
         if (args.length < 1) {
-            throw new IllegalArgumentException("Requires at least one argument - name of the main class");
+            SpringApplication.run(WdmApplication.class, args);
+            System.out.println("SpringApplication run");
+//            throw new IllegalArgumentException("Requires at least one argument - name of the main class");
         } else {
             arguments = Arrays.copyOfRange(args, 1, args.length);
             Class mainClass = Class.forName(args[0]);

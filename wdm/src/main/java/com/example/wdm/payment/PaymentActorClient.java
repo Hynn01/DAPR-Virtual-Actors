@@ -38,25 +38,24 @@ public class PaymentActorClient {
       List<Thread> threads = new ArrayList<>(NUM_ACTORS);
       ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
-      ActorId actorId = new ActorId("2");
+      ActorId actorId = new ActorId("3");
       PaymentActor actor = builder.build(actorId);
       //create user
-      Future<String> future1 =
-              threadPool.submit(new CallActor(actorId.toString(), actor, 1));
+      Future<String> future1 = threadPool.submit(new CallActor(actorId.toString(), actor, 1));
       String user_id = future1.get();
       System.out.println("Got user id: "+user_id);
       //find user
-//      Future<String> future2 = threadPool.submit(new CallActor(actorId.toString(), actor, 2));
-//      String credit = future2.get();
-//      System.out.println("Got user credit: "+credit);
-//      Future<String> future3 = threadPool.submit(new CallActor(actorId.toString(), actor, 4));
-//      System.out.println("1");
-//      String credit1 = future3.get();
-//      System.out.println("2");
-//      System.out.println("credit after adding 1: "+credit1);
-//      Future<String> future4 = threadPool.submit(new CallActor(actorId.toString(), actor, 3, 1));
-//      String credit2 = future4.get();
-//      System.out.println("credit after subtrscting 1: "+credit2);
+      Future<String> future2 = threadPool.submit(new CallActor(actorId.toString(), actor, 2));
+      String credit = future2.get();
+      System.out.println("Got user credit: "+credit);
+      //add credit
+      Future<String> future3 = threadPool.submit(new CallActor(actorId.toString(), actor, 4, 1));
+      String credit1 = future3.get();
+      System.out.println("credit after adding: "+credit1);
+      //decrease credit
+      Future<String> future4 = threadPool.submit(new CallActor(actorId.toString(), actor, 3, 1));
+      String credit2 = future4.get();
+      System.out.println("credit after subtrscting 1: "+credit2);
     }
 
     System.out.println("Done.");
