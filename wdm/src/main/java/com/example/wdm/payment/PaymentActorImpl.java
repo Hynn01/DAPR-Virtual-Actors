@@ -78,10 +78,10 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
   @Override
   public Mono<String> addFunds(int amount) {
     System.out.println("service : add funds");
-//    int credit = super.getActorStateManager().get("credit", int.class).block();
-//    int c = credit+amount;
+    int credit = super.getActorStateManager().get("credit", int.class).block();
+    int c = credit+amount;
 //    System.out.println("new credit: "+c);
-    return super.getActorStateManager().set("credit", 2).thenReturn("2");
+    return super.getActorStateManager().set("credit", c).thenReturn(String.valueOf(c));
 //        System.out.println("finish");
 //    return Mono.just(1);
   }

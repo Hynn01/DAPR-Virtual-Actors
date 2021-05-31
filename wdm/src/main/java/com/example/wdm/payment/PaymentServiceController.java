@@ -13,24 +13,25 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.UUID;
 
 @RestController
 public class PaymentServiceController {
 
-    private static final int NUM_ACTORS = 3;
+//    private static final int NUM_ACTORS = 3;
 
     @PostMapping("/payment/pay/{user_id}/{order_id}/{amount}")
     public String postPayment(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Integer amount) {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
-            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
+//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
             ActorId actorId = new ActorId(user_id);
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
-                    threadPool.submit(new CallActor(actorId.toString(), actor, 4, amount));
+                    threadPool.submit(new CallActor(actorId.toString(), actor, 3, amount));
 
             credit = future.get();
 
@@ -62,7 +63,7 @@ public class PaymentServiceController {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
-            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
+//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
             ActorId actorId = new ActorId(user_id);
@@ -85,10 +86,10 @@ public class PaymentServiceController {
         String user_id = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
-            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
+//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
-
-            ActorId actorId = ActorId.createRandom();
+            UUID uuid = UUID.randomUUID();
+            ActorId actorId = new ActorId(uuid.toString());
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
                     threadPool.submit(new CallActor(actorId.toString(), actor, 1));
@@ -109,7 +110,7 @@ public class PaymentServiceController {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
-            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
+//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
             ActorId actorId = new ActorId(user_id);

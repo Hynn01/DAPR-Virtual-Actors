@@ -11,6 +11,7 @@ import io.dapr.actors.client.ActorProxyBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.*;
 
 /**
@@ -38,21 +39,24 @@ public class PaymentActorClient {
       List<Thread> threads = new ArrayList<>(NUM_ACTORS);
       ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
-      ActorId actorId = new ActorId("3");
+      UUID uuid = UUID.randomUUID();
+//      ActorId actorId = new ActorId(uuid.toString());
+//      ActorId actorId = ActorId.createRandom();
+      ActorId actorId = new ActorId("7fb6b7c5-9037-4b00-b863-9cdc1f3acc28");
       PaymentActor actor = builder.build(actorId);
       //create user
-      Future<String> future1 = threadPool.submit(new CallActor(actorId.toString(), actor, 1));
-      String user_id = future1.get();
-      System.out.println("Got user id: "+user_id);
+//      Future<String> future1 = threadPool.submit(new CallActor(actorId.toString(), actor, 1));
+//      String user_id = future1.get();
+//      System.out.println("Got user id: "+user_id);
       //find user
-      Future<String> future2 = threadPool.submit(new CallActor(actorId.toString(), actor, 2));
-      String credit = future2.get();
-      System.out.println("Got user credit: "+credit);
+//      Future<String> future2 = threadPool.submit(new CallActor(actorId.toString(), actor, 2));
+//      String credit = future2.get();
+//      System.out.println("Got user credit: "+credit);
       //add credit
       Future<String> future3 = threadPool.submit(new CallActor(actorId.toString(), actor, 4, 1));
       String credit1 = future3.get();
       System.out.println("credit after adding: "+credit1);
-      //decrease credit
+//      //decrease credit
       Future<String> future4 = threadPool.submit(new CallActor(actorId.toString(), actor, 3, 1));
       String credit2 = future4.get();
       System.out.println("credit after subtrscting 1: "+credit2);
