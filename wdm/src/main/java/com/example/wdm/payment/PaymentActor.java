@@ -21,7 +21,13 @@ public interface PaymentActor {
   Mono<String> createUser();
 
   @ActorMethod(returns = String.class)
+  Mono<Integer> findUser();
+
+  @ActorMethod(returns = String.class)
   Mono<Integer> postPayment(int amount);
+
+  @ActorMethod(returns = String.class)
+  Mono<Integer> addFunds(int amount);
 
   @ActorMethod(returns = String.class)
   Mono<String> cancelPayment(String user_id, String order_id);

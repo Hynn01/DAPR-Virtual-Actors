@@ -11,6 +11,10 @@ import io.dapr.actors.client.ActorProxyBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @RestController
 public class PaymentServiceController {
@@ -46,6 +50,23 @@ public class PaymentServiceController {
 
     @RequestMapping("/payment/create_user")
     public String createUser() {
+        try (ActorClient client = new ActorClient()) {
+            ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
+            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
+            ExecutorService threadPool = Executors.newSingleThreadExecutor();
+
+            ActorId actorId = ActorId.createRandom();
+            PaymentActor actor = builder.build(actorId);
+            Future<String> future =
+                    threadPool.submit(new CallActor(actorId.toString(), actor, 1));
+
+            String user_id = future.get();
+
+            System.out.println("Got user id:"+user_id);
+
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
         return "user_id";
     }
 

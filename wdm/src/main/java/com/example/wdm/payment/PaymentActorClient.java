@@ -11,6 +11,7 @@ import io.dapr.actors.client.ActorProxyBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Client for Actor runtime to invoke actor methods.
@@ -21,58 +22,44 @@ import java.util.List;
  * dapr run --components-path ./components/actors --app-id demoactorclient -- java -jar \
  * target/dapr-java-sdk-examples-exec.jar io.dapr.examples.actors.DemoActorClient
  */
+
 public class PaymentActorClient {
 
-  private static final int NUM_ACTORS = 1;
+  private static final int NUM_ACTORS = 0;
 
   /**
    * The main method.
    * @param args Input arguments (unused).
    * @throws InterruptedException If program has been interrupted.
    */
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) throws InterruptedException, ExecutionException {
     try (ActorClient client = new ActorClient()) {
       ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
       List<Thread> threads = new ArrayList<>(NUM_ACTORS);
+      ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
-      // Creates multiple actors.
-      for (int i = 0; i < NUM_ACTORS; i++) {
-//        ActorId actorId = ActorId.createRandom();
-        ActorId actorId = new ActorId("1");
-        PaymentActor actor = builder.build(actorId);
-
-        // Start a thread per actor.
-        Thread thread = new Thread(() -> callActor(actorId.toString(), actor));
-        thread.start();
-        threads.add(thread);
-      }
-
-      // Waits for threads to finish.
-      for (Thread thread : threads) {
-        thread.join();
-      }
+      ActorId actorId = new ActorId("2");
+      PaymentActor actor = builder.build(actorId);
+      //create user
+      Future<String> future1 =
+              threadPool.submit(new CallActor(actorId.toString(), actor, 1));
+      String user_id = future1.get();
+      System.out.println("Got user id: "+user_id);
+      //find user
+//      Future<String> future2 = threadPool.submit(new CallActor(actorId.toString(), actor, 2));
+//      String credit = future2.get();
+//      System.out.println("Got user credit: "+credit);
+//      Future<String> future3 = threadPool.submit(new CallActor(actorId.toString(), actor, 4));
+//      System.out.println("1");
+//      String credit1 = future3.get();
+//      System.out.println("2");
+//      System.out.println("credit after adding 1: "+credit1);
+//      Future<String> future4 = threadPool.submit(new CallActor(actorId.toString(), actor, 3, 1));
+//      String credit2 = future4.get();
+//      System.out.println("credit after subtrscting 1: "+credit2);
     }
 
     System.out.println("Done.");
-  }
-
-  /**
-   * Makes multiple method calls into actor until interrupted.
-   * @param actorId Actor's identifier.
-   * @param actor Actor to be invoked.
-   */
-  private static final void callActor(String actorId, PaymentActor actor) {
-    // First, register reminder.
-    actor.registerReminder();
-
-    System.out.println("callActor");
-
-//    actor.createUser().block();
-    actor.postPayment(1).block();
-//    actor.cancelPayment().block();
-//    actor.getPaymentStatus().block();
-
-
   }
 
 }

@@ -53,12 +53,15 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
   @Override
   public Mono<String> createUser() {
 
-    System.out.println("service:create user");
+    System.out.println("service:create user:"+this.getId());
+    return super.getActorStateManager().set("credit", 0).thenReturn(this.getId().toString());
+  }
 
-    return super.getActorStateManager().contains("credit")
-            .flatMap(exists -> exists ? Mono.just("0") : super.getActorStateManager().set("credit", 8).thenReturn(this.getId().toString()));
-//            .flatMap(exists -> exists ?super.getActorStateManager().set("credit", 7).thenReturn(this.getId().toString()) : super.getActorStateManager().set("credit", 8).thenReturn(this.getId().toString()));
-
+  @Override
+  public Mono<Integer> findUser() {
+    System.out.println("service: find user");
+    System.out.println("credit"+super.getActorStateManager().get("credit", int.class).block());
+    return  super.getActorStateManager().get("credit", int.class);
   }
 
   @Override
@@ -70,6 +73,17 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
             .flatMap(exists -> exists ? super.getActorStateManager().get("credit", int.class) : Mono.just(0))
             .map(c -> c - amount)
             .flatMap(c -> c>0 ? super.getActorStateManager().set("credit", c).thenReturn(c): Mono.just(0));
+  }
+
+  @Override
+  public Mono<Integer> addFunds(int amount) {
+    System.out.println("service : add funds");
+//    int credit = super.getActorStateManager().get("credit", int.class).block();
+//    int c = credit+amount;
+//    System.out.println("new credit: "+c);
+    return super.getActorStateManager().set("credit", 10).thenReturn(10);
+//        System.out.println("finish");
+//    return Mono.just(1);
   }
 
   @Override
