@@ -97,7 +97,7 @@ import java.util.List;
  */
 public class DemoActorClient {
 
-  private static final int NUM_ACTORS = 3;
+  private static final int NUM_ACTORS = 1;
 
   /**
    * The main method.
@@ -111,10 +111,12 @@ public class DemoActorClient {
 
       // Creates multiple actors.
       for (int i = 0; i < NUM_ACTORS; i++) {
-        ActorId actorId = ActorId.createRandom();
-        DemoActor actor = builder.build(actorId);
+//        ActorId actorId = ActorId.createRandom();
+      ActorId actorId = new ActorId("d18c14af-91e8-4048-b07d-0cb9cd127a4e");
+      DemoActor actor = builder.build(actorId);
 
-        // Start a thread per actor.
+
+      // Start a thread per actor.
         Thread thread = new Thread(() -> callActorForever(actorId.toString(), actor));
         thread.start();
         threads.add(thread);

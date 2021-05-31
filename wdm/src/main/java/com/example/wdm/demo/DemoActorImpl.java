@@ -219,7 +219,7 @@ public class DemoActorImpl extends AbstractActor implements DemoActor, Remindabl
     System.out.println("service:create user");
 
     return super.getActorStateManager().contains("credit")
-            .flatMap(exists -> exists ? Mono.just("0") : super.getActorStateManager().set("credit", 0).thenReturn(this.getId().toString()));
+            .flatMap(exists -> exists ? super.getActorStateManager().set("credit", 8).thenReturn(this.getId().toString()) : super.getActorStateManager().set("credit", 0).thenReturn(this.getId().toString()));
 
   }
 
