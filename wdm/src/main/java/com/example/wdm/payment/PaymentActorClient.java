@@ -39,8 +39,6 @@ public class PaymentActorClient {
       List<Thread> threads = new ArrayList<>(NUM_ACTORS);
       ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
-      UUID uuid = UUID.randomUUID();
-//      ActorId actorId = new ActorId(uuid.toString());
 //      ActorId actorId = ActorId.createRandom();
       ActorId actorId = new ActorId("7fb6b7c5-9037-4b00-b863-9cdc1f3acc28");
       PaymentActor actor = builder.build(actorId);

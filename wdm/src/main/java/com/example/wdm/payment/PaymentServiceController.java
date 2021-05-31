@@ -88,8 +88,9 @@ public class PaymentServiceController {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
 //            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
-            UUID uuid = UUID.randomUUID();
-            ActorId actorId = new ActorId(uuid.toString());
+//            UUID uuid = UUID.randomUUID();
+//            ActorId actorId = new ActorId(uuid.toString());
+            ActorId actorId = ActorId.createRandom();
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
                     threadPool.submit(new CallActor(actorId.toString(), actor, 1));
