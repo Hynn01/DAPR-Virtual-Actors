@@ -37,7 +37,8 @@ public class PaymentActorClient {
 
       // Creates multiple actors.
       for (int i = 0; i < NUM_ACTORS; i++) {
-        ActorId actorId = ActorId.createRandom();
+//        ActorId actorId = ActorId.createRandom();
+        ActorId actorId = new ActorId("1");
         PaymentActor actor = builder.build(actorId);
 
         // Start a thread per actor.
@@ -64,9 +65,13 @@ public class PaymentActorClient {
     // First, register reminder.
     actor.registerReminder();
 
-    System.out.println("client:create user");
+    System.out.println("callActor");
 
-    actor.createUser().block();
+//    actor.createUser().block();
+    actor.postPayment(1).block();
+//    actor.cancelPayment().block();
+//    actor.getPaymentStatus().block();
+
 
   }
 

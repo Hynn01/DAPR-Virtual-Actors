@@ -1,6 +1,7 @@
 package com.example.wdm.payment;
 
 import io.dapr.actors.client.ActorClient;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,26 +17,31 @@ public class PaymentServiceController {
 
     private static final int NUM_ACTORS = 3;
 
-    @RequestMapping("/payment/pay/{user_id}/{order_id}/{amount}")
+    @PostMapping("/payment/pay/{user_id}/{order_id}/{amount}")
     public String postPayment() {
+        //substract money
 
-        return "/payment/pay/{user_id}/{order_id}/{amount}";
+        //if success, add a order record to the user; if fail, don't add; order id和amount先不关联
+
+        return "true/fail";
     }
 
     @RequestMapping("/payment/cancel/{user_id}/{order_id}")
     public String cancelPayment() {
 
-        return "/payment/cancel/{user_id}/{order_id}";
+
+        return "'ok': (true/false)";
     }
 
     @RequestMapping("/payment/status/{order_id}")
-    public String index3() {
-        return "/payment/status/{order_id}";
+    public String getPaymentStatus() {
+
+        return "'paid': (true/false)";
     }
 
     @RequestMapping("/payment/add_funds/{user_id}/{amount}")
-    public String index4() {
-        return "/payment/add_funds/{user_id}/{amount}";
+    public String addFunds() {
+        return "done(true/false)";
     }
 
     @RequestMapping("/payment/create_user")
@@ -44,8 +50,8 @@ public class PaymentServiceController {
     }
 
     @RequestMapping("/payment/find_user/{user_id}")
-    public String index6() {
-        return "/payment/find_user/{user_id}";
+    public String findUser() {
+        return "{userid:'',usercredir:''}";
     }
 
 }

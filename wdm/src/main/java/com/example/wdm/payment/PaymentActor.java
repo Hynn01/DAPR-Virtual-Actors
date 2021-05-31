@@ -17,7 +17,17 @@ public interface PaymentActor {
 
   void registerReminder();
 
-  @ActorMethod(returns = Object.class)
+  @ActorMethod(returns = String.class)
   Mono<String> createUser();
+
+  @ActorMethod(returns = String.class)
+  Mono<Integer> postPayment(int amount);
+
+  @ActorMethod(returns = String.class)
+  Mono<String> cancelPayment(String user_id, String order_id);
+
+  @ActorMethod(returns = String.class)
+  Mono<String> getPaymentStatus(String order_id);
+
 
 }

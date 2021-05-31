@@ -56,8 +56,34 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
     System.out.println("service:create user");
 
     return super.getActorStateManager().contains("credit")
-            .flatMap(exists -> exists ? Mono.just("0") : super.getActorStateManager().set("credit", 0).thenReturn(this.getId().toString()));
+            .flatMap(exists -> exists ? Mono.just("0") : super.getActorStateManager().set("credit", 8).thenReturn(this.getId().toString()));
+//            .flatMap(exists -> exists ?super.getActorStateManager().set("credit", 7).thenReturn(this.getId().toString()) : super.getActorStateManager().set("credit", 8).thenReturn(this.getId().toString()));
 
+  }
+
+  @Override
+  public Mono<Integer> postPayment(int amount) {
+    System.out.println("service:postPayment");
+
+    // only substract, no record
+    return super.getActorStateManager().contains("credit")
+            .flatMap(exists -> exists ? super.getActorStateManager().get("credit", int.class) : Mono.just(0))
+            .map(c -> c - amount)
+            .flatMap(c -> c>0 ? super.getActorStateManager().set("credit", c).thenReturn(c): Mono.just(0));
+  }
+
+  @Override
+  public Mono<String> cancelPayment(String user_id, String order_id) {
+    System.out.println("service:cancelPayment");
+
+    return null;
+  }
+
+  @Override
+  public Mono<String> getPaymentStatus(String order_id) {
+    System.out.println("service:getPaymentStatus");
+
+    return null;
   }
 
 
