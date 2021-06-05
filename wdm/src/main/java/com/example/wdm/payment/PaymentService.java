@@ -1,31 +1,25 @@
 package com.example.wdm.payment;
 
-import io.dapr.actors.client.ActorClient;
-import org.springframework.web.bind.annotation.*;
-
 import io.dapr.actors.ActorId;
 import io.dapr.actors.client.ActorClient;
 import io.dapr.actors.client.ActorProxyBuilder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.UUID;
 
-@RestController
-public class PaymentServiceController {
+public class PaymentService {
 
-//    private static final int NUM_ACTORS = 3;
-
-    @PostMapping("/payment/pay/{user_id}/{order_id}/{amount}")
-    public String postPayment(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Integer amount) {
+    public static Map<String, String> postPayment(String user_id, Integer amount) {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
-//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
             ActorId actorId = new ActorId(user_id);
@@ -41,29 +35,28 @@ public class PaymentServiceController {
             e.printStackTrace();
         }
 
-        String json =  "{\"user_id\":"+user_id+","+"\"credit\":"+credit+"}";
-        return json;
+        Map<String,String> result=new HashMap<String, String>();
+        result.put("user_id",user_id);
+        result.put("credit",credit);
+        return result;
     }
 
-    @PostMapping("/payment/cancel/{user_id}/{order_id}")
-    public String cancelPayment() {
+
+    public static String cancelPayment() {
 
 
         return "'ok': (true/false)";
     }
 
-    @GetMapping("/payment/status/{order_id}")
-    public String getPaymentStatus() {
+    public static String getPaymentStatus() {
 
         return "'paid': (true/false)";
     }
 
-    @PostMapping("/payment/add_funds/{user_id}/{amount}")
-    public String addFunds(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Integer amount) {
+    public static Map<String,String> addFunds(String user_id, Integer amount) {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
-//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
             ActorId actorId = new ActorId(user_id);
@@ -78,11 +71,14 @@ public class PaymentServiceController {
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        String json =  "{\"user_id\":"+user_id+","+"\"credit\":"+credit+"}";
-        return json;
+
+        Map<String,String> result=new HashMap<String,String>();
+        result.put("user_id",user_id);
+        result.put("credit",credit);
+        return result;
     }
-    @PostMapping("/payment/create_user")
-    public String createUser() {
+
+    public static Map<String,String> createUser() {
         String user_id = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
@@ -102,12 +98,13 @@ public class PaymentServiceController {
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        String json =  "{\"user_id\":"+user_id+"}";
-        return json;
+
+        Map<String,String> result=new HashMap<String,String>();
+        result.put("user_id",user_id);
+        return result;
     }
 
-    @GetMapping("/payment/find_user/{user_id}")
-    public String findUser(@PathVariable(name="user_id") String user_id) {
+    public static Map<String,String> findUser(@PathVariable(name="user_id") String user_id) {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
@@ -127,6 +124,10 @@ public class PaymentServiceController {
             e.printStackTrace();
         }
         String json =  "{\"user_id\":"+user_id+","+"\"credit\":"+credit+"}";
-        return json;
+        Map<String,String> result=new HashMap<String,String>();
+        result.put("user_id",user_id);
+        result.put("credit",credit);
+
+        return result;
     }
 }

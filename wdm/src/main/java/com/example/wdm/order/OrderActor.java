@@ -15,8 +15,6 @@ public interface OrderActor {
     @ActorMethod(returns = String.class)
     Mono<String> remove_order(String order_id);// order_id
 
-    void remove1();
-
     @ActorMethod(returns = String.class)
     Mono<String> find_order();// order_id
 

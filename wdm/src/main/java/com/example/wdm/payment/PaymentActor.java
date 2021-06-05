@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 /**
  * Example of implementation of an Actor.
  */
-@ActorType(name = "DemoActor")
+@ActorType(name = "PaymentActor")
 public interface PaymentActor {
 
   void registerReminder();

@@ -71,50 +71,15 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
 //////        DaprProtos.DeleteBulkStateRequest.Builder.removeStates(this.getId());
 ////        System.out.println(order_id);
 ////        ActorRuntime.getInstance().deactivate("OrderActor",order_id).block();
-        super.getActorStateManager().remove("paid").block();
+//        super.getActorStateManager().set("paid",null).block();
         super.getActorStateManager().remove("items").block();
         super.getActorStateManager().remove("user_id").block();
         super.getActorStateManager().remove("total_cost").block();
-//        super.getActorStateManager().remove(order_id).block();
-//        this.unregisterReminder("myremind").block();
+        super.getActorStateManager().remove(order_id).block();
+        this.unregisterReminder("myremind").block();
+//        ActorRuntime.getInstance().deactivate("OrderActor",this.getId().toString()).block();
         return Mono.just("delete successful");
     }
-
-    @Override
-    public void remove1() {
-        System.out.println("service delete order: ");
-//        ActorStateChangeKind.REMOVE();
-//        DaprProtos.DeleteBulkStateRequest.Builder.removeStates(this.getId());
-//        super.getActorStateManager().remove("paid").block();
-        super.getActorStateManager().remove("items").block();
-//        super.getActorStateManager().remove("user_id").block();
-//        super.getActorStateManager().remove("total_cost").block();
-//        super.getActorStateManager().remove(order_id).block();
-    }
-
-//    @Override
-//    public void remove2(String order_id) {
-//        System.out.println("service delete order: ");
-////        ActorStateChangeKind.REMOVE();
-////        DaprProtos.DeleteBulkStateRequest.Builder.removeStates(this.getId());
-//        super.getActorStateManager().remove("paid").block();
-//        super.getActorStateManager().remove("items").block();
-//        super.getActorStateManager().remove("user_id").block();
-//        super.getActorStateManager().remove("total_cost").block();
-////        super.getActorStateManager().remove(order_id).block();
-//    }
-//
-//    @Override
-//    public void remove3(String order_id) {
-//        System.out.println("service delete order: ");
-////        ActorStateChangeKind.REMOVE();
-////        DaprProtos.DeleteBulkStateRequest.Builder.removeStates(this.getId());
-//        super.getActorStateManager().remove("paid").block();
-//        super.getActorStateManager().remove("items").block();
-//        super.getActorStateManager().remove("user_id").block();
-//        super.getActorStateManager().remove("total_cost").block();
-////        super.getActorStateManager().remove(order_id).block();
-//    }
 
     @Override
     public Mono<String> find_order() {
@@ -125,7 +90,6 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         int total_cost = super.getActorStateManager().get("total_cost", int.class).block();
         String result = paid.toString()+"#"+items.toString()+'#'+user_id+"#"+String.valueOf(total_cost);
         this.unregisterReminder("myremind").block();
-        ActorRuntime.getInstance().deactivate("OrderActor",this.getId().toString()).block();
         return Mono.just(result);
     }
 
@@ -134,6 +98,7 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         ArrayList<String> items = super.getActorStateManager().get("items", ArrayList.class).block();
         items.add(item_id);
         super.getActorStateManager().set("items", items).block();
+        this.unregisterReminder("myremind").block();
         return Mono.just("success");
     }
 
@@ -144,7 +109,6 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         System.out.println(items);
         super.getActorStateManager().set("items", items).block();
         this.unregisterReminder("myremind").block();
-        ActorRuntime.getInstance().deactivate("OrderActor",this.getId().toString()).block();
         return Mono.just("success");
     }
 
