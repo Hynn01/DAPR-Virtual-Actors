@@ -24,8 +24,15 @@ public class StockService{
             ActorId actorId = new ActorId(item_id);
             StockActor actor = builder.build(actorId);
             Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 2));
-
             result = future.get();
+            System.out.println(result);
+            if (result.equals("Invalid ID!")){
+                System.out.println("service - invalid id");
+                Map<String,String> res =new HashMap<String, String>();
+                res.put("stock","invalid");
+                res.put("price","invalid");
+                return res;
+            }
             String [] arr = result.split("#");
             stock = arr[1];
             price = arr[0];
@@ -53,8 +60,14 @@ public class StockService{
             StockActor actor = builder.build(actorId);
             Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 3, number));
             result = future.get();
-            String [] arr = result.split("#");
-            stock = arr[1];
+            if (result.equals("Invalid ID!")){
+                System.out.println("service - invalid id");
+                Map<String,String> res =new HashMap<String, String>();
+                res.put("stock","invalid");
+                res.put("item_id","invalid");
+                return res;
+            }
+            stock = result;
             System.out.println("Subtract - controller, done");
 
         } catch (ExecutionException | InterruptedException e) {
@@ -78,8 +91,14 @@ public class StockService{
             StockActor actor = builder.build(actorId);
             Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 4, number));
             result = future.get();
-            String [] arr = result.split("#");
-            stock = arr[1];
+            if (result.equals("Invalid ID!")){
+                System.out.println("service - invalid id");
+                Map<String,String> res =new HashMap<String, String>();
+                res.put("stock","invalid");
+                res.put("item_id","invalid");
+                return res;
+            }
+            stock = result;
             System.out.println("Add - controller, done");
 
         } catch (ExecutionException | InterruptedException e) {
