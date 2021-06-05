@@ -118,12 +118,8 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
     }
 
     @Override
-    public Mono<String> set_status(String order_id, String status) {
-        if(status.equals("false")) {
-            super.getActorStateManager().set("paid", false).block();
-        }else{
-            super.getActorStateManager().set("paid", true).block();
-        }
+    public Mono<String> set_status_false(String order_id) {
+        super.getActorStateManager().set("paid", false).block();
         return Mono.just("success");
     }
 

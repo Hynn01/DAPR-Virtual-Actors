@@ -48,8 +48,7 @@ public class PaymentService {
         if(orderResult.get("paid").equals("true")){
             Double amount=Double.valueOf(orderResult.get("total_cost"));
             addFunds(user_id, amount);
-            String status="unpaid";
-            OrderService.setOrderStatusService(order_id, status);
+            OrderService.setOrderStatusFalseService(order_id);
             return "success";
         }else{
             return "success";

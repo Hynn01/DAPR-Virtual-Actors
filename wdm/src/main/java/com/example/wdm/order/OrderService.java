@@ -132,7 +132,7 @@ public class OrderService {
         return mapResult;
     }
 
-    public static Map<String,String> setOrderStatusService(String order_id, String status){
+    public static Map<String,String> setOrderStatusFalseService(String order_id){
 
         String result = "";
 
@@ -142,7 +142,7 @@ public class OrderService {
 
             ActorId actorId = new ActorId(order_id);
             OrderActor actor = builder.build(actorId);
-            Future<String> future = threadPool.submit(new OrderCallActor(actorId.toString(), actor, 6,status));
+            Future<String> future = threadPool.submit(new OrderCallActor(actorId.toString(), actor, 6));
             result = future.get();
 
         } catch (Exception e) {
