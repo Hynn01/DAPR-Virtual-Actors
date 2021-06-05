@@ -8,13 +8,13 @@ public class PaymentCallActor implements Callable {
     private String actorId;
     private PaymentActor actor;
     private Integer type;
-    private Integer amount;
+    private Double amount;
     public PaymentCallActor(String actorId, PaymentActor actor, Integer type){
         this.actorId = actorId;
         this.actor  = actor;
         this.type = type;
     }
-    public PaymentCallActor(String actorId, PaymentActor actor, Integer type, Integer amount){
+    public PaymentCallActor(String actorId, PaymentActor actor, Integer type, Double amount){
         this.actorId = actorId;
         this.actor = actor;
         this.type = type;

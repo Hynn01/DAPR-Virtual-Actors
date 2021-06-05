@@ -15,7 +15,7 @@ import java.util.concurrent.Future;
 
 public class PaymentService {
 
-    public static Map<String, String> postPayment(String user_id, Integer amount) {
+    public static Map<String, String> postPayment(String user_id, Double amount) {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
@@ -45,8 +45,8 @@ public class PaymentService {
 
         Map<String,String> orderResult=OrderService.findOrderService(order_id);
 
-        if(orderResult.get("paid")=="true"){
-            int amount=Integer.valueOf(orderResult.get("total_cost")).intValue();
+        if(orderResult.get("paid").equals("true")){
+            Double amount=Double.valueOf(orderResult.get("total_cost"));
             addFunds(user_id, amount);
             String status="unpaid";
             OrderService.setOrderStatusService(order_id, status);
@@ -64,7 +64,7 @@ public class PaymentService {
         return orderResult.get("paid");
     }
 
-    public static Map<String,String> addFunds(String user_id, Integer amount) {
+    public static Map<String,String> addFunds(String user_id, Double amount) {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);

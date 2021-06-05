@@ -50,11 +50,11 @@ public class PaymentActorClient {
       String credit = future2.get();
       System.out.println("Got user credit: "+credit);
       //add credit
-      Future<String> future3 = threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 4, 1));
+      Future<String> future3 = threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 4, 2.1));
       String credit1 = future3.get();
       System.out.println("credit after adding: "+credit1);
 //      //decrease credit
-      Future<String> future4 = threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 3, 1));
+      Future<String> future4 = threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 3, 1.1));
       String credit2 = future4.get();
       System.out.println("credit after subtrscting 1: "+credit2);
     }

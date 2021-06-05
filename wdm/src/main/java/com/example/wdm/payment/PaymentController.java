@@ -19,7 +19,7 @@ public class PaymentController {
 //    private static final int NUM_ACTORS = 3;
 
     @PostMapping("/payment/pay/{user_id}/{order_id}/{amount}")
-    public String postPayment(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Integer amount) {
+    public String postPayment(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Double amount) {
         Map<String,String> result=PaymentService.postPayment(user_id,amount);
         String json =  "{\"user_id\":"+result.get("user_id")+","+"\"credit\":"+result.get("credit")+"}";
         return json;
@@ -40,7 +40,8 @@ public class PaymentController {
     }
 
     @PostMapping("/payment/add_funds/{user_id}/{amount}")
-    public String addFunds(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Integer amount) {
+    public String addFunds(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Double amount) {
+        System.out.println("amount: "+amount);
         Map<String,String> result=PaymentService.addFunds(user_id,amount);
         String json =  "{\"user_id\":"+result.get("user_id")+","+"\"credit\":"+result.get("credit")+"}";
         return json;

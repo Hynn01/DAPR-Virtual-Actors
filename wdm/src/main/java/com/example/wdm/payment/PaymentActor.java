@@ -24,10 +24,10 @@ public interface PaymentActor {
   Mono<String> findUser();
 
   @ActorMethod(returns = String.class)
-  Mono<String> postPayment(int amount);
+  Mono<String> postPayment(Double amount);
 
   @ActorMethod(returns = String.class)
-  Mono<String> addFunds(int amount);
+  Mono<String> addFunds(Double amount);
 
   @ActorMethod(returns = String.class)
   Mono<String> cancelPayment(String user_id, String order_id);
