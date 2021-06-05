@@ -28,15 +28,15 @@ public class PaymentController {
     @PostMapping("/payment/cancel/{user_id}/{order_id}")
     public String cancelPayment(@PathVariable(name="user_id") String user_id, @PathVariable(name="order_id") String order_id) {
 
-        PaymentService.cancelPayment(user_id,order_id);
-        return "'ok': (true/false)";
+        String result=PaymentService.cancelPayment(user_id,order_id);
+        return result;
     }
 
     @GetMapping("/payment/status/{order_id}")
     public String getPaymentStatus(@PathVariable(name="order_id") String order_id) {
 
-        PaymentService.getPaymentStatus(order_id);
-        return "'paid': (true/false)";
+        String result=PaymentService.getPaymentStatus(order_id);
+        return result;
     }
 
     @PostMapping("/payment/add_funds/{user_id}/{amount}")
