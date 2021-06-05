@@ -22,6 +22,7 @@ public class StockServiceController {
     @GetMapping("/stock/find/{item_id}")
     public String findItem(@PathVariable(name="item_id") String item_id) {
         Map<String, String> res =  stockService.findItem(item_id);
+        //System.out.println(res.get("stock"));
         String json = "{\"stock\":"+res.get("stock")+","+"\"price\":"+res.get("price")+"}";
         return json;
     }
@@ -29,6 +30,7 @@ public class StockServiceController {
     @PostMapping("/stock/subtract/{item_id}/{number}")
     public String subtractStock(@PathVariable(name="item_id") String item_id, @PathVariable(name="number") Integer number) {
         Map<String, String> res =  stockService.subtractStock(item_id, number);
+        //String json = "{\"item_id\":"+res.get("item_id")+","+"\"stock\":"+res.get("stock")+"}";
         String json = "{\"item_id\":"+res.get("item_id")+","+"\"stock\":"+res.get("stock")+"}";
         return json;
     }

@@ -63,49 +63,58 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
 
   @Override
   public Mono<String> findItem() {
-//    try {
-    String id = super.getActorStateManager().get("id", String.class).block();
-    System.out.println(id);
-    Double price = super.getActorStateManager().get("price", Double.class).block();
-    System.out.println(price);
-    Integer stock = super.getActorStateManager().get("stock", Integer.class).block();
-    String result = price.toString()+"#"+stock.toString();
-    this.unregisterReminder("myremind").block();
-      //ActorRuntime.getInstance().deactivate("StockActor",this.getId().toString()).block();
-    return Mono.just(result);
-//    }catch (NoSuchElementException e){
-//      System.out.println("nosuche");
-//      e.printStackTrace();
-//      return Mono.just("no such id");
-//    }
-
+    return super.getActorStateManager().contains("id").flatMap(idExists -> {
+      if (idExists){
+        String id = super.getActorStateManager().get("id", String.class).block();
+        System.out.println(id);
+        Double price = super.getActorStateManager().get("price", Double.class).block();
+        System.out.println(price);
+        Integer stock = super.getActorStateManager().get("stock", Integer.class).block();
+        String result = price.toString()+"#"+stock.toString();
+        this.unregisterReminder("myremind").block();
+        return Mono.just(result);
+      }else{
+        return Mono.just("Invalid ID!");
+      }
+    });
   }
 
   @Override
   public Mono<String> subtractStock(Integer number) {
-    System.out.println("service: subtractStock");
+    return super.getActorStateManager().contains("id").flatMap(idExists -> {
+      if (idExists){
+        int stock = super.getActorStateManager().get("stock", int.class).block();
+        int newStock = stock - number;
+        //super.getActorStateManager().set("stock", newStock).block();
+        System.out.println("new credit: "+newStock);
+        super.getActorStateManager().set("stock", newStock).block();
+        this.unregisterReminder("myremind").block();
+        //ActorRuntime.getInstance().deactivate("StockActor",this.getId().toString()).block();
+        return Mono.just(Integer.toString(newStock));
+      }else{
+        return Mono.just("Invalid ID!");
+      }
+    });
 
-    int stock = super.getActorStateManager().get("stock", int.class).block();
-    int newStock = stock - number;
-    //super.getActorStateManager().set("stock", newStock).block();
-    System.out.println("new credit: "+newStock);
-    super.getActorStateManager().set("stock", newStock).block();
-    this.unregisterReminder("myremind").block();
-    //ActorRuntime.getInstance().deactivate("StockActor",this.getId().toString()).block();
-    return Mono.just(Integer.toString(newStock));
 
   }
 
   @Override
   public Mono<String> addStock(Integer number) {
-    System.out.println("service : add stock");
-    int stock = super.getActorStateManager().get("stock", int.class).block();
-    int newStock = stock + number;
-    System.out.println("new credit: "+newStock);
-    super.getActorStateManager().set("stock", newStock).block();
-    this.unregisterReminder("myremind").block();
-    //ActorRuntime.getInstance().deactivate("StockActor",this.getId().toString()).block();
-    return Mono.just(Integer.toString(newStock));
+    return super.getActorStateManager().contains("id").flatMap(idExists -> {
+      if (idExists){
+        int stock = super.getActorStateManager().get("stock", int.class).block();
+        int newStock = stock + number;
+        //super.getActorStateManager().set("stock", newStock).block();
+        System.out.println("new credit: "+newStock);
+        super.getActorStateManager().set("stock", newStock).block();
+        this.unregisterReminder("myremind").block();
+        //ActorRuntime.getInstance().deactivate("StockActor",this.getId().toString()).block();
+        return Mono.just(Integer.toString(newStock));
+      }else{
+        return Mono.just("Invalid ID!");
+      }
+    });
   }
 
 
