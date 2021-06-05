@@ -1,5 +1,6 @@
 package com.example.wdm.payment;
 
+import com.example.wdm.order.OrderService;
 import io.dapr.actors.ActorId;
 import io.dapr.actors.client.ActorClient;
 import io.dapr.actors.client.ActorProxyBuilder;
@@ -40,15 +41,27 @@ public class PaymentService {
     }
 
 
-    public static String cancelPayment() {
+    public static String cancelPayment(String user_id, String order_id) {
 
+        Map<String,String> orderResult=OrderService.findOrderService(order_id);
 
-        return "'ok': (true/false)";
+        if(orderResult.get("paid")=="true"){
+            int amount=Integer.valueOf(orderResult.get("total_cost")).intValue();
+            addFunds(user_id, amount);
+            String status="unpaid";
+            OrderService.setOrderStatusService(order_id, status);
+            return "success";
+        }else{
+            return "success";
+        }
+
     }
 
-    public static String getPaymentStatus() {
+    public static String getPaymentStatus(String order_id) {
 
-        return "'paid': (true/false)";
+        Map<String,String> orderResult=OrderService.findOrderService(order_id);
+
+        return orderResult.get("paid");
     }
 
     public static Map<String,String> addFunds(String user_id, Integer amount) {
