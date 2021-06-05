@@ -10,11 +10,14 @@ public class OrderCallActor implements Callable {
     private String order_id;
     private String item_id;
     private Integer change;
+    private String status;
+
     public OrderCallActor(String actorId, OrderActor actor, Integer type){
         this.actorId = actorId;
         this.actor  = actor;
         this.type = type;
     }
+
 //    public OrderCallActor(String actorId, OrderActor actor, Integer type, Integer amount){
 //        this.actorId = actorId;
 //        this.actor = actor;
@@ -39,6 +42,11 @@ public class OrderCallActor implements Callable {
         this.actor = actor;
         this.type = type;
         this.change = change;
+    }
+    public OrderCallActor(String actorId, OrderActor actor, String status){
+        this.actorId = actorId;
+        this.actor  = actor;
+        this.status=status;
     }
     @Override
     public Object call() throws Exception {
@@ -67,6 +75,10 @@ public class OrderCallActor implements Callable {
             }
             case 5:{
                 result = actor.remove_item(item_id).block().toString();
+                break;
+            }
+            case 6:{
+                result = actor.set_status(order_id,status).block().toString();
                 break;
             }
         }

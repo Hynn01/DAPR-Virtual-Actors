@@ -133,41 +133,24 @@ public class OrderService {
     }
 
     public static Map<String,String> setOrderStatusService(String order_id, String status){
+
         String result = "";
-        String paid = "";
-        String items = "";
-        String user_id = "";
-        String total_cost = "";
+
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
             ActorId actorId = new ActorId(order_id);
             OrderActor actor = builder.build(actorId);
-            Future<String> future =
-                    threadPool.submit(new OrderCallActor(actorId.toString(), actor, 3));
+            Future<String> future = threadPool.submit(new OrderCallActor(actorId.toString(), actor, 6,status));
             result = future.get();
-            String[] arr = result.split("#");
-            paid = arr[0];
-            items = arr[1];
-            user_id = arr[2];
-            total_cost = arr[3];
-            System.out.println("Got user paid: " + paid);
-            System.out.println("Got order items: " + items);
-            System.out.println("Got user id " + user_id);
-            System.out.println("Got user total_cost" + total_cost);
-        } catch (ExecutionException | InterruptedException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-//        String json = "{\"order_id\":" + order_id + "," + "\"paid\":" + paid + "\"items\":"
-//                + items + "\"user_id\":" + user_id + "\"total_cost\":" + total_cost + "}";
-//        return json;
+
         Map<String,String> mapResult=new HashMap<String,String>();
-        mapResult.put("order_id",order_id);
-        mapResult.put("paid",paid);
-        mapResult.put("items",items);
-        mapResult.put("user_id",user_id);
-        mapResult.put("total_cost",total_cost);
+        mapResult.put("result",result);
         return mapResult;
     }
 }

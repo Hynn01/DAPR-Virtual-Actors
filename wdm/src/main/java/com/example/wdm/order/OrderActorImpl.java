@@ -117,6 +117,16 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         return null;
     }
 
+    @Override
+    public Mono<String> set_status(String order_id, String status) {
+        if(status=="false") {
+            super.getActorStateManager().set("paid", false).block();
+        }else{
+            super.getActorStateManager().set("paid", true).block();
+        }
+        return Mono.just("success");
+    }
+
 
     /**
      * Method used to determine reminder's state type.
