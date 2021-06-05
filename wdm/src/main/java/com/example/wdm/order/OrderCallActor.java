@@ -10,13 +10,11 @@ public class OrderCallActor implements Callable {
     private String order_id;
     private String item_id;
     private Integer change;
-
     public OrderCallActor(String actorId, OrderActor actor, Integer type){
         this.actorId = actorId;
         this.actor  = actor;
         this.type = type;
     }
-
 //    public OrderCallActor(String actorId, OrderActor actor, Integer type, Integer amount){
 //        this.actorId = actorId;
 //        this.actor = actor;
@@ -42,7 +40,6 @@ public class OrderCallActor implements Callable {
         this.type = type;
         this.change = change;
     }
-
     @Override
     public Object call() throws Exception {
         actor.registerReminder();
@@ -63,9 +60,7 @@ public class OrderCallActor implements Callable {
                 break;
             }
             case 4:{
-                System.out.println("3");
                 result = actor.add_item(item_id).block().toString();
-                System.out.println("4");
                 break;
             }
             case 5:{
@@ -73,8 +68,7 @@ public class OrderCallActor implements Callable {
                 break;
             }
             case 6:{
-                result = actor.set_status_false(order_id).block().toString();
-                break;
+                result = actor.checkout(item_id).block().toString();
             }
         }
         return result;

@@ -24,27 +24,38 @@ public class OrderController {
 
     @RequestMapping("/orders/find/{order_id}")
     public String find_order(@PathVariable(name = "order_id") String order_id) {
-        Map<String,String> mapResult=orderService.findOrderService(order_id);
-        String json = "{\"order_id\":" + mapResult.get("order_id") + "," + "\"paid\":" + mapResult.get("paid") + "\"items\":"
-        + mapResult.get("items") + "\"user_id\":" + mapResult.get("user_id") + "\"total_cost\":" + mapResult.get("total_cost") + "}";
-        return json;
+        String result = "";
+        Map<String,String> mapResult = orderService.findOrderService(order_id);
+        if(mapResult.get("status").equals("success")){
+            result = "{\"order_id\":" + mapResult.get("order_id") + "," + "\"paid\":" + mapResult.get("paid") + "\"items\":"
+                    + mapResult.get("items") + "\"user_id\":" + mapResult.get("user_id") + "\"total_cost\":" + mapResult.get("total_cost") + "}";
+        }
+        else{
+            result = mapResult.get("result");
+        }
+        return result;
     }
 
     @PostMapping("/orders/addItem/{order_id}/{item_id}")
     public String addOrders(@PathVariable(name = "order_id") String order_id, @PathVariable(name = "item_id") String item_id) {
-        String result = orderService.addOrderService(order_id, item_id).get("result");
+        Map<String,String> mapResult = orderService.addOrderService(order_id, item_id);
+
+        String result = mapResult.get("result");
         return result;
     }
 
     @DeleteMapping("/orders/removeItem/{order_id}/{item_id}")
     public String remove_item(@PathVariable(name = "order_id") String order_id, @PathVariable(name = "item_id") String item_id) {
-        String result = orderService.removeOrderService(order_id,item_id).get("result");
+        Map<String,String> mapResult = orderService.removeOrderService(order_id,item_id);
+        String result = mapResult.get("result");
         return result;
     }
 
-    @RequestMapping("/orders/checkout/{order_id}")
-    public String index6() {
-        return "/orders/checkout/{order_id}";
+    @PostMapping("/orders/checkout/{order_id}")
+    public String checkout(@PathVariable(name = "order_id") String order_id) {
+        String paymentResult = new String();
+        String stockResult = orderService.checkout(order_id).get("result");
+        return stockResult;
     }
 
 }

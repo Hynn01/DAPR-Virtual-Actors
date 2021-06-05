@@ -1,4 +1,6 @@
 package com.example.wdm.order;
+import com.example.wdm.stock.StockActor;
+import com.example.wdm.stock.StockService;
 import io.dapr.actors.ActorId;
 import io.dapr.actors.runtime.*;
 import io.dapr.client.DaprClientBuilder;
@@ -6,13 +8,12 @@ import io.dapr.client.DaprClientGrpc;
 import io.dapr.utils.TypeRef;
 import io.dapr.v1.DaprProtos;
 import reactor.core.publisher.Mono;
+import com.example.wdm.payment.PaymentService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.*;
 
 public class OrderActorImpl extends AbstractActor implements OrderActor, Remindable<Integer> {
 
@@ -52,78 +53,149 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
 
     @Override
     public Mono<String> create_order(String user_id) {
+        String result = "";
         System.out.println("service:create order:"+this.getId());
         ArrayList<String> items = new ArrayList<String>();
+        super.getActorStateManager().add("order_id", this.getId().toString()).block();
         super.getActorStateManager().add("paid", false).block();
         super.getActorStateManager().add("items", items).block();
         super.getActorStateManager().add("user_id", user_id).block();
         super.getActorStateManager().add("total_cost", 0).block();
+        result = this.getId().toString();
         this.unregisterReminder("myremind").block();
-        return Mono.just(this.getId().toString());
+        return Mono.just(result);
     }
 
     @Override
     public Mono<String> remove_order(String order_id) {
-//        ActorRuntime.getInstance().deactivate("OrderActor", order_id);
-//        System.out.println(this.getId());
-//        System.out.println("service delete order: ");
-//////        ActorStateChangeKind.REMOVE();
-//////        DaprProtos.DeleteBulkStateRequest.Builder.removeStates(this.getId());
-////        System.out.println(order_id);
-////        ActorRuntime.getInstance().deactivate("OrderActor",order_id).block();
-//        super.getActorStateManager().set("paid",null).block();
-        super.getActorStateManager().remove("items").block();
-        super.getActorStateManager().remove("user_id").block();
-        super.getActorStateManager().remove("total_cost").block();
-        super.getActorStateManager().remove(order_id).block();
+        System.out.println("service delete order:");
+        String result = "";
+        String order_get = super.getActorStateManager().get("order_id", String.class).block();
+        if(!order_get.equals(order_id)){
+            result = "there is no this order";
+        }
+        else{
+            super.getActorStateManager().set("order_id","null").block();
+            super.getActorStateManager().set("paid","null").block();
+            super.getActorStateManager().set("items","null").block();
+            super.getActorStateManager().set("user_id","null").block();
+            super.getActorStateManager().set("total_cost","null").block();
+            result = "delete successful";
+        }
         this.unregisterReminder("myremind").block();
-//        ActorRuntime.getInstance().deactivate("OrderActor",this.getId().toString()).block();
-        return Mono.just("delete successful");
+        return Mono.just(result);
     }
 
     @Override
     public Mono<String> find_order() {
         System.out.println("service: find order");
-        Boolean paid = super.getActorStateManager().get("paid", Boolean.class).block();
-        ArrayList<String> items = super.getActorStateManager().get("items", ArrayList.class).block();
-        String user_id = super.getActorStateManager().get("user_id", String.class).block();
-        int total_cost = super.getActorStateManager().get("total_cost", int.class).block();
-        String result = paid.toString()+"#"+items.toString()+'#'+user_id+"#"+String.valueOf(total_cost);
+        String result = "";
+        String order_get = super.getActorStateManager().get("order_id", String.class).block();
+        System.out.println(order_get);
+        if(order_get.equals("null")){
+            result = "there is no this order";
+            System.out.println(result);
+        }
+        else {
+            Boolean paid = super.getActorStateManager().get("paid", Boolean.class).block();
+            ArrayList<String> items = super.getActorStateManager().get("items", ArrayList.class).block();
+            String user_id = super.getActorStateManager().get("user_id", String.class).block();
+            double total_cost = super.getActorStateManager().get("total_cost", double.class).block();
+            result = paid.toString()+"#"+items.toString()+'#'+user_id+"#"+String.valueOf(total_cost);
+        }
         this.unregisterReminder("myremind").block();
         return Mono.just(result);
     }
 
     @Override
     public Mono<String> add_item(String item_id) {
-        ArrayList<String> items = super.getActorStateManager().get("items", ArrayList.class).block();
-        items.add(item_id);
-        super.getActorStateManager().set("items", items).block();
+        System.out.println("service: add item");
+        String result = "";
+        String order_get = super.getActorStateManager().get("order_id", String.class).block();
+        if(!order_get.equals(this.getId().toString())){
+            result = "there is no this order";
+        }
+        else{
+            StockService stockService = new StockService();
+            Map<String, String> find_res = stockService.findItem(item_id);
+            double cost = Double.parseDouble(find_res.get("price"));
+            double totalCost = super.getActorStateManager().get("total_cost", Double.class).block();
+            totalCost = totalCost + cost;
+            super.getActorStateManager().set("total_cost", totalCost).block();
+            ArrayList<String> items = super.getActorStateManager().get("items", ArrayList.class).block();
+            items.add(item_id);
+            super.getActorStateManager().set("items", items).block();
+            result = "success";
+        }
         this.unregisterReminder("myremind").block();
-        return Mono.just("success");
+        return Mono.just(result);
     }
 
     @Override
     public Mono<String> remove_item(String item_id) {
+        System.out.println("service: delete item");
+        String result = "";
+        String order_get = super.getActorStateManager().get("order_id", String.class).block();
+        if(!order_get.equals(this.getId().toString())){
+            result = "there is no this order";
+        }
+        else {
+            StockService stockService = new StockService();
+            Map<String, String> find_res = stockService.findItem(item_id);
+            double cost = Double.parseDouble(find_res.get("price"));
+            double totalCost = super.getActorStateManager().get("total_cost", Double.class).block();
+            totalCost = totalCost - cost;
+            super.getActorStateManager().set("total_cost", totalCost).block();
+            ArrayList<String> items = super.getActorStateManager().get("items", ArrayList.class).block();
+            items.remove(item_id);
+            System.out.println(items);
+            super.getActorStateManager().set("items", items).block();
+            result = "success";
+        }
+        this.unregisterReminder("myremind").block();
+        return Mono.just(result);
+    }
+
+    @Override
+    public Mono<String> checkout(String order_id) {
+        ArrayList<String> res = new ArrayList<>();
+        String stockRes = "sufficient stock";
+        String paymentRes = "enough credit";
         ArrayList<String> items = super.getActorStateManager().get("items", ArrayList.class).block();
-        items.remove(item_id);
-        System.out.println(items);
-        super.getActorStateManager().set("items", items).block();
-        this.unregisterReminder("myremind").block();
-        return Mono.just("success");
+        HashMap<String, Integer> item_set = new HashMap<>();
+        for(String item: items){
+            if(!item_set.containsKey(item)){item_set.put(item, 1);}
+            else {
+                Integer temp = item_set.get(item);
+                item_set.put(item, temp + 1);
+            }
+        }
+        for(String key: item_set.keySet()){
+            StockService stockService = new StockService();
+            Map<String,String> tempMap =new HashMap<String, String>();
+            tempMap = stockService.subtractStock(key, item_set.get(key));
+            if(Integer.parseInt(tempMap.get("stock"))<0){
+                stockRes = "Insufficient stock";
+                break;
+            }
+        }
+        PaymentService paymentService = new PaymentService();
+        Map<String, String> temp = paymentService.findUser(super.getActorStateManager().get("user_id", String.class).block());
+        double credit = Double.parseDouble(temp.get("credit"));
+        double total_cost = super.getActorStateManager().get("total_cost", Double.class).block();
+        if(credit < total_cost){paymentRes = "user don't hold enough credit";}
+        return Mono.just(stockRes + paymentRes);
     }
 
     @Override
-    public Mono<String> checkout() {
-        return null;
-    }
-
-    @Override
-    public Mono<String> set_status_false(String order_id) {
-        super.getActorStateManager().set("paid", false).block();
-        this.unregisterReminder("myremind").block();
+    public Mono<String> set_status(String order_id, String status) {
+        if(status.equals("false")) {
+            super.getActorStateManager().set("paid", false).block();
+        }else{
+            super.getActorStateManager().set("paid", true).block();
+        }
         return Mono.just("success");
     }
-
 
     /**
      * Method used to determine reminder's state type.

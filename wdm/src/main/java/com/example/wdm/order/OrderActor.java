@@ -25,9 +25,10 @@ public interface OrderActor {
     Mono<String> remove_item(String item_id); // order_id & item_id
 
     @ActorMethod(returns = String.class)
-    Mono<String> checkout(); // order_id
+    Mono<String> checkout(String order_id); // order_id
 
     @ActorMethod(returns = String.class)
-    Mono<String> set_status_false(String order_id);// order_id
+    Mono<String> set_status(String order_id, String status);// order_id
+
 
 }
