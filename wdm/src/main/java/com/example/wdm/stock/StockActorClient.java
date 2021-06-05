@@ -43,28 +43,35 @@ public class StockActorClient {
       ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
       System.out.println("start");
-      //ActorId actorId = ActorId.createRandom();
-      ActorId actorId = new ActorId("c42870ec-cb10-41cc-8e25-922a4455b54e");
+      ActorId actorId = ActorId.createRandom();
+      //ActorId actorId = new ActorId("8ca81963-5d8e-42f6-ab9e-7832cdc210ii");
       StockActor actor = builder.build(actorId);
       //create item
-//      Future<String> future1 = threadPool.submit(new CallActor(actorId.toString(), actor, 1, 100.0));
-//      result = future1.get();
-//      System.out.println("Got item id: "+result);
-      //find item
-//      Future<String> future2 = threadPool.submit(new CallActor(actorId.toString(), actor, 2));
-//      result = future2.get();
-//      String [] arr = result.split("#");
-//      stock = arr[1];
-//      price = arr[0];
-//      System.out.println("stock: "+stock+"\n price:"+price);
+      Future<String> future1 = threadPool.submit(new StockCallActor(actorId.toString(), actor, 1, 100.0));
+      result = future1.get();
+      System.out.println("Got item id: "+result);
+//
       //add stock
-//      Future<String> future3 = threadPool.submit(new CallActor(actorId.toString(), actor, 4, 18));
-//      String res = future3.get();
-//      System.out.println("new stock: "+res);
+      Future<String> future3 = threadPool.submit(new StockCallActor(actorId.toString(), actor, 4, 18));
+      String res1 = future3.get();
+      System.out.println("new stock: "+res1);
       //decrease credit
-      Future<String> future4 = threadPool.submit(new CallActor(actorId.toString(), actor, 3, 3));
-      String res = future4.get();
-      System.out.println("new stock: "+res);
+      Future<String> future4 = threadPool.submit(new StockCallActor(actorId.toString(), actor, 3, 3));
+      String res2 = future4.get();
+      System.out.println("new stock: "+res2);
+
+      //find item
+      Future<String> future2 = threadPool.submit(new StockCallActor(actorId.toString(), actor, 2));
+      String res3 = future2.get();
+      if (res3=="no such id"){
+        System.out.println("no");
+      }
+      else {
+        String[] arr = res3.split("#");
+        stock = arr[1];
+        price = arr[0];
+        System.out.println("stock: " + stock + "\n price:" + price);
+      }
     }
 
     System.out.println("Done.");

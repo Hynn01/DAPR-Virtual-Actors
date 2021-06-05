@@ -11,12 +11,13 @@ import io.dapr.actors.runtime.ActorRuntimeContext;
 import io.dapr.actors.runtime.Remindable;
 import io.dapr.utils.TypeRef;
 import reactor.core.publisher.Mono;
-
+import io.dapr.actors.runtime.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.NoSuchElementException;
 
 /**
  * Implementation of the DemoActor for the server side.
@@ -55,18 +56,29 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
     System.out.println("service:create item:"+this.getId());
     super.getActorStateManager().add("price", price).block();
     super.getActorStateManager().add("stock", 0).block();
-    //int price1 = super.getActorStateManager().get("price", int.class).block();
-    //System.out.println("price: "+price1);
+    super.getActorStateManager().add("id", this.getId().toString()).block();
+    this.unregisterReminder("myremind").block();
     return Mono.just(this.getId().toString());
   }
 
   @Override
   public Mono<String> findItem() {
-    System.out.println("imple");
+//    try {
+    String id = super.getActorStateManager().get("id", String.class).block();
+    System.out.println(id);
     Double price = super.getActorStateManager().get("price", Double.class).block();
+    System.out.println(price);
     Integer stock = super.getActorStateManager().get("stock", Integer.class).block();
     String result = price.toString()+"#"+stock.toString();
+    this.unregisterReminder("myremind").block();
+      //ActorRuntime.getInstance().deactivate("StockActor",this.getId().toString()).block();
     return Mono.just(result);
+//    }catch (NoSuchElementException e){
+//      System.out.println("nosuche");
+//      e.printStackTrace();
+//      return Mono.just("no such id");
+//    }
+
   }
 
   @Override
@@ -75,8 +87,12 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
 
     int stock = super.getActorStateManager().get("stock", int.class).block();
     int newStock = stock - number;
+    //super.getActorStateManager().set("stock", newStock).block();
     System.out.println("new credit: "+newStock);
-    return super.getActorStateManager().set("stock", newStock).thenReturn(String.valueOf(newStock));
+    super.getActorStateManager().set("stock", newStock).block();
+    this.unregisterReminder("myremind").block();
+    //ActorRuntime.getInstance().deactivate("StockActor",this.getId().toString()).block();
+    return Mono.just(Integer.toString(newStock));
 
   }
 
@@ -86,7 +102,10 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
     int stock = super.getActorStateManager().get("stock", int.class).block();
     int newStock = stock + number;
     System.out.println("new credit: "+newStock);
-    return super.getActorStateManager().set("stock", newStock).thenReturn(String.valueOf(newStock));
+    super.getActorStateManager().set("stock", newStock).block();
+    this.unregisterReminder("myremind").block();
+    //ActorRuntime.getInstance().deactivate("StockActor",this.getId().toString()).block();
+    return Mono.just(Integer.toString(newStock));
   }
 
 

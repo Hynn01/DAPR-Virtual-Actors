@@ -26,10 +26,9 @@ public class StockServiceController {
             ActorProxyBuilder<StockActor> builder = new ActorProxyBuilder(StockActor.class, client);
 //            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
-
             ActorId actorId = new ActorId(item_id);
             StockActor actor = builder.build(actorId);
-            Future<String> future = threadPool.submit(new CallActor(actorId.toString(), actor, 2));
+            Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 2));
 
             result = future.get();
             String [] arr = result.split("#");
@@ -56,7 +55,7 @@ public class StockServiceController {
 
             ActorId actorId = new ActorId(item_id);
             StockActor actor = builder.build(actorId);
-            Future<String> future = threadPool.submit(new CallActor(actorId.toString(), actor, 3, number));
+            Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 3, number));
             result = future.get();
             String [] arr = result.split("#");
             stock = arr[1];
@@ -80,7 +79,7 @@ public class StockServiceController {
 
             ActorId actorId = new ActorId(item_id);
             StockActor actor = builder.build(actorId);
-            Future<String> future = threadPool.submit(new CallActor(actorId.toString(), actor, 4, number));
+            Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 4, number));
             result = future.get();
             String [] arr = result.split("#");
             stock = arr[1];
@@ -105,7 +104,7 @@ public class StockServiceController {
             ActorId actorId = ActorId.createRandom();
             StockActor actor = builder.build(actorId);
 
-            Future<String> future = threadPool.submit(new CallActor(actorId.toString(), actor, 1, price));
+            Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 1, price));
 
             item_id = future.get();
 
