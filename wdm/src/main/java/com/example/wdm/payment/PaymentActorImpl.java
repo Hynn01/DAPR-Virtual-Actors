@@ -7,6 +7,7 @@ package com.example.wdm.payment;
 
 import io.dapr.actors.ActorId;
 import io.dapr.actors.runtime.AbstractActor;
+import io.dapr.actors.runtime.ActorRuntime;
 import io.dapr.actors.runtime.ActorRuntimeContext;
 import io.dapr.actors.runtime.Remindable;
 import io.dapr.utils.TypeRef;
@@ -52,38 +53,52 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
 
   @Override
   public Mono<String> createUser() {
-
     System.out.println("service:create user:"+this.getId());
-    return super.getActorStateManager().set("credit", 0).thenReturn(this.getId().toString());
+    super.getActorStateManager().set("credit", 0).block();
+    this.unregisterReminder("myremind").block();
+//    ActorRuntime.getInstance().deactivate("PaymentActor",this.getId().toString()).block();
+    return Mono.just(this.getId().toString());
   }
 
   @Override
   public Mono<String> findUser() {
     System.out.println("service: find user");
     int credit = super.getActorStateManager().get("credit", int.class).block();
+    this.unregisterReminder("myremind").block();
+//    ActorRuntime.getInstance().deactivate("PaymentActor",this.getId().toString()).block();
     return  Mono.just(String.valueOf(credit));
   }
 
   @Override
   public Mono<String> postPayment(int amount) {
     System.out.println("service:postPayment");
-
-    // only substract, no record
-    return super.getActorStateManager().contains("credit")
-            .flatMap(exists -> exists ? super.getActorStateManager().get("credit", int.class) : Mono.just(0))
-            .map(c -> c - amount)
-            .flatMap(c -> c>0 ? super.getActorStateManager().set("credit", c).thenReturn(c+""): Mono.just("0"));
+    int credit_before = super.getActorStateManager().get("credit", int.class).block();
+    System.out.println("credit_before: "+credit_before);
+    if(credit_before - amount>=0){
+      super.getActorStateManager().set("credit", credit_before - amount).block();
+      System.out.println("reduce");
+    }
+    int credit_after = super.getActorStateManager().get("credit", int.class).block();
+    System.out.println("credit_after: " + credit_after);
+    this.unregisterReminder("myremind").block();
+//    ActorRuntime.getInstance().deactivate("PaymentActor",this.getId().toString()).block();
+    if(credit_after < credit_before) {
+      return Mono.just(String.valueOf(credit_after));
+    }
+    else {
+      return Mono.just("-1");
+    }
   }
 
   @Override
   public Mono<String> addFunds(int amount) {
     System.out.println("service : add funds");
+    int c = super.getActorStateManager().get("credit", int.class).block() + amount;
+    super.getActorStateManager().set("credit", c).block();
     int credit = super.getActorStateManager().get("credit", int.class).block();
-    int c = credit+amount;
-//    System.out.println("new credit: "+c);
-    return super.getActorStateManager().set("credit", c).thenReturn(String.valueOf(c));
-//        System.out.println("finish");
-//    return Mono.just(1);
+    this.unregisterReminder("myremind").block();
+//    ActorRuntime.getInstance().deactivate("PaymentActor",this.getId().toString()).block();
+    return Mono.just(String.valueOf(credit));
   }
 
   @Override

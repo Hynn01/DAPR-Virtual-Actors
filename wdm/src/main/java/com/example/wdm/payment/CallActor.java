@@ -40,9 +40,7 @@ public class CallActor implements Callable {
                 break;
             }
             case 4:{
-                System.out.println("3");
                 result = actor.addFunds(amount).block().toString();
-                System.out.println("4");
                 break;
             }
         }
