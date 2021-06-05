@@ -1,11 +1,10 @@
 package com.example.wdm.payment;
 
+import com.example.wdm.order.OrderService;
 import io.dapr.actors.ActorId;
 import io.dapr.actors.client.ActorClient;
 import io.dapr.actors.client.ActorProxyBuilder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +15,7 @@ import java.util.concurrent.Future;
 
 public class PaymentService {
 
-    public static Map<String, String> postPayment(String user_id, Integer amount) {
+    public static Map<String, String> postPayment(String user_id, Double amount) {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
@@ -25,7 +24,7 @@ public class PaymentService {
             ActorId actorId = new ActorId(user_id);
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
-                    threadPool.submit(new CallActor(actorId.toString(), actor, 3, amount));
+                    threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 3, amount));
 
             credit = future.get();
 
@@ -42,18 +41,29 @@ public class PaymentService {
     }
 
 
-    public static String cancelPayment() {
+    public static String cancelPayment(String user_id, String order_id) {
 
+        Map<String,String> orderResult=OrderService.findOrderService(order_id);
 
-        return "'ok': (true/false)";
+        if(orderResult.get("paid").equals("true")){
+            Double amount=Double.valueOf(orderResult.get("total_cost"));
+            addFunds(user_id, amount);
+            OrderService.setOrderStatusFalseService(order_id);
+            return "success";
+        }else{
+            return "success";
+        }
+
     }
 
-    public static String getPaymentStatus() {
+    public static String getPaymentStatus(String order_id) {
 
-        return "'paid': (true/false)";
+        Map<String,String> orderResult=OrderService.findOrderService(order_id);
+
+        return orderResult.get("paid");
     }
 
-    public static Map<String,String> addFunds(String user_id, Integer amount) {
+    public static Map<String,String> addFunds(String user_id, Double amount) {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
@@ -62,7 +72,7 @@ public class PaymentService {
             ActorId actorId = new ActorId(user_id);
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
-                    threadPool.submit(new CallActor(actorId.toString(), actor, 4, amount));
+                    threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 4, amount));
 
             credit = future.get();
 
@@ -89,7 +99,7 @@ public class PaymentService {
             ActorId actorId = ActorId.createRandom();
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
-                    threadPool.submit(new CallActor(actorId.toString(), actor, 1));
+                    threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 1));
 
             user_id = future.get();
 
@@ -114,7 +124,7 @@ public class PaymentService {
             ActorId actorId = new ActorId(user_id);
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
-                    threadPool.submit(new CallActor(actorId.toString(), actor, 2));
+                    threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 2));
 
             credit = future.get();
 

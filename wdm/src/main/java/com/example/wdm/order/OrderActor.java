@@ -27,4 +27,7 @@ public interface OrderActor {
     @ActorMethod(returns = String.class)
     Mono<String> checkout(); // order_id
 
+    @ActorMethod(returns = String.class)
+    Mono<String> set_status_false(String order_id);// order_id
+
 }

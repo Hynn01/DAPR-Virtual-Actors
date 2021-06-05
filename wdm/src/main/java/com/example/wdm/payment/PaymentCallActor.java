@@ -4,17 +4,17 @@ import com.sun.jdi.IntegerType;
 
 import java.util.concurrent.Callable;
 
-public class CallActor implements Callable {
+public class PaymentCallActor implements Callable {
     private String actorId;
     private PaymentActor actor;
     private Integer type;
-    private Integer amount;
-    public CallActor(String actorId, PaymentActor actor, Integer type){
+    private Double amount;
+    public PaymentCallActor(String actorId, PaymentActor actor, Integer type){
         this.actorId = actorId;
         this.actor  = actor;
         this.type = type;
     }
-    public CallActor(String actorId, PaymentActor actor, Integer type, Integer amount){
+    public PaymentCallActor(String actorId, PaymentActor actor, Integer type, Double amount){
         this.actorId = actorId;
         this.actor = actor;
         this.type = type;

@@ -4,6 +4,8 @@ import io.dapr.actors.ActorId;
 import io.dapr.actors.client.ActorClient;
 import io.dapr.actors.client.ActorProxyBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,7 +13,7 @@ import java.util.concurrent.Future;
 
 public class OrderService {
 
-    public String createOrderService(String user_id){
+    public static Map<String,String> createOrderService(String user_id){
         String order_id = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
@@ -24,11 +26,16 @@ public class OrderService {
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        String json = "{\"order_id\":" + order_id + "}";
-        return json;
+
+        Map<String,String> result=new HashMap<String,String>();
+        result.put("order_id",order_id);
+        return result;
+
+//        String json = "{\"order_id\":" + order_id + "}";
+//        return json;
     }
 
-    public String removeOrderService(String order_id){
+    public static Map<String,String> removeOrderService(String order_id){
         String result = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
@@ -41,10 +48,13 @@ public class OrderService {
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        return result;
+//        return result;
+        Map<String,String> mapResult=new HashMap<String,String>();
+        mapResult.put("result",result);
+        return mapResult;
     }
 
-    public String findOrderService(String order_id){
+    public static Map<String,String> findOrderService(String order_id){
         String result = "";
         String paid = "";
         String items = "";
@@ -71,12 +81,19 @@ public class OrderService {
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        String json = "{\"order_id\":" + order_id + "," + "\"paid\":" + paid + "\"items\":"
-                + items + "\"user_id\":" + user_id + "\"total_cost\":" + total_cost + "}";
-        return json;
+//        String json = "{\"order_id\":" + order_id + "," + "\"paid\":" + paid + "\"items\":"
+//                + items + "\"user_id\":" + user_id + "\"total_cost\":" + total_cost + "}";
+//        return json;
+        Map<String,String> mapResult=new HashMap<String,String>();
+        mapResult.put("order_id",order_id);
+        mapResult.put("paid",paid);
+        mapResult.put("items",items);
+        mapResult.put("user_id",user_id);
+        mapResult.put("total_cost",total_cost);
+        return mapResult;
     }
 
-    public String addOrderService(String order_id, String item_id){
+    public static Map<String,String> addOrderService(String order_id, String item_id){
         String result = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
@@ -91,10 +108,12 @@ public class OrderService {
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        return result;
+        Map<String,String> mapResult=new HashMap<String,String>();
+        mapResult.put("result",result);
+        return mapResult;
     }
 
-    public String removeOrderService(String order_id, String item_id){
+    public static Map<String,String> removeOrderService(String order_id, String item_id){
         String result = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
@@ -108,6 +127,30 @@ public class OrderService {
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        return result;
+        Map<String,String> mapResult=new HashMap<String,String>();
+        mapResult.put("result",result);
+        return mapResult;
+    }
+
+    public static Map<String,String> setOrderStatusFalseService(String order_id){
+
+        String result = "";
+
+        try (ActorClient client = new ActorClient()) {
+            ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
+            ExecutorService threadPool = Executors.newSingleThreadExecutor();
+
+            ActorId actorId = new ActorId(order_id);
+            OrderActor actor = builder.build(actorId);
+            Future<String> future = threadPool.submit(new OrderCallActor(actorId.toString(), actor, 6));
+            result = future.get();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Map<String,String> mapResult=new HashMap<String,String>();
+        mapResult.put("result",result);
+        return mapResult;
     }
 }
