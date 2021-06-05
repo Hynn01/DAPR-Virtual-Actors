@@ -54,7 +54,7 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
   @Override
   public Mono<String> createUser() {
     System.out.println("service:create user:"+this.getId());
-    super.getActorStateManager().set("credit", 0).block();
+    super.getActorStateManager().set("credit", 0.0).block();
     this.unregisterReminder("myremind").block();
 //    ActorRuntime.getInstance().deactivate("PaymentActor",this.getId().toString()).block();
     return Mono.just(this.getId().toString());
@@ -63,22 +63,22 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
   @Override
   public Mono<String> findUser() {
     System.out.println("service: find user");
-    int credit = super.getActorStateManager().get("credit", int.class).block();
+    Double credit = super.getActorStateManager().get("credit", Double.class).block();
     this.unregisterReminder("myremind").block();
 //    ActorRuntime.getInstance().deactivate("PaymentActor",this.getId().toString()).block();
     return  Mono.just(String.valueOf(credit));
   }
 
   @Override
-  public Mono<String> postPayment(int amount) {
+  public Mono<String> postPayment(Double amount) {
     System.out.println("service:postPayment");
-    int credit_before = super.getActorStateManager().get("credit", int.class).block();
+    Double credit_before = super.getActorStateManager().get("credit", Double.class).block();
     System.out.println("credit_before: "+credit_before);
     if(credit_before - amount>=0){
       super.getActorStateManager().set("credit", credit_before - amount).block();
       System.out.println("reduce");
     }
-    int credit_after = super.getActorStateManager().get("credit", int.class).block();
+    Double credit_after = super.getActorStateManager().get("credit", Double.class).block();
     System.out.println("credit_after: " + credit_after);
     this.unregisterReminder("myremind").block();
 //    ActorRuntime.getInstance().deactivate("PaymentActor",this.getId().toString()).block();
@@ -91,11 +91,11 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
   }
 
   @Override
-  public Mono<String> addFunds(int amount) {
+  public Mono<String> addFunds(Double amount) {
     System.out.println("service : add funds");
-    int c = super.getActorStateManager().get("credit", int.class).block() + amount;
+    Double c = super.getActorStateManager().get("credit", Double.class).block() + amount;
     super.getActorStateManager().set("credit", c).block();
-    int credit = super.getActorStateManager().get("credit", int.class).block();
+    Double credit = super.getActorStateManager().get("credit", Double.class).block();
     this.unregisterReminder("myremind").block();
 //    ActorRuntime.getInstance().deactivate("PaymentActor",this.getId().toString()).block();
     return Mono.just(String.valueOf(credit));
