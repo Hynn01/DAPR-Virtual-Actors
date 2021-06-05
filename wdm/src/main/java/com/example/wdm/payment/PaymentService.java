@@ -3,9 +3,7 @@ package com.example.wdm.payment;
 import io.dapr.actors.ActorId;
 import io.dapr.actors.client.ActorClient;
 import io.dapr.actors.client.ActorProxyBuilder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +23,7 @@ public class PaymentService {
             ActorId actorId = new ActorId(user_id);
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
-                    threadPool.submit(new CallActor(actorId.toString(), actor, 3, amount));
+                    threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 3, amount));
 
             credit = future.get();
 
@@ -62,7 +60,7 @@ public class PaymentService {
             ActorId actorId = new ActorId(user_id);
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
-                    threadPool.submit(new CallActor(actorId.toString(), actor, 4, amount));
+                    threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 4, amount));
 
             credit = future.get();
 
@@ -89,7 +87,7 @@ public class PaymentService {
             ActorId actorId = ActorId.createRandom();
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
-                    threadPool.submit(new CallActor(actorId.toString(), actor, 1));
+                    threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 1));
 
             user_id = future.get();
 
@@ -114,7 +112,7 @@ public class PaymentService {
             ActorId actorId = new ActorId(user_id);
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
-                    threadPool.submit(new CallActor(actorId.toString(), actor, 2));
+                    threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 2));
 
             credit = future.get();
 

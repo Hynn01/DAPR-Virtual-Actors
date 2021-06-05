@@ -1,19 +1,8 @@
 package com.example.wdm.order;
 
-import com.example.wdm.payment.CallActor;
-import com.example.wdm.payment.PaymentActor;
-import io.dapr.actors.ActorId;
-import io.dapr.actors.client.ActorClient;
-import io.dapr.actors.client.ActorProxyBuilder;
-import io.dapr.actors.runtime.ActorRuntime;
-import io.dapr.v1.DaprProtos.DeleteStateRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 
 @RestController
