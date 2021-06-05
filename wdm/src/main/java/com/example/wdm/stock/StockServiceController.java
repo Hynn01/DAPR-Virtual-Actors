@@ -12,109 +12,37 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class StockServiceController {
+    StockService stockService = new StockService();
 
     @GetMapping("/stock/find/{item_id}")
     public String findItem(@PathVariable(name="item_id") String item_id) {
-        System.out.println("controller");
-        String stock = "";
-        String price = "";
-        String result = "";
-        try (ActorClient client = new ActorClient()) {
-            ActorProxyBuilder<StockActor> builder = new ActorProxyBuilder(StockActor.class, client);
-//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
-            ExecutorService threadPool = Executors.newSingleThreadExecutor();
-            ActorId actorId = new ActorId(item_id);
-            StockActor actor = builder.build(actorId);
-            Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 2));
-
-            result = future.get();
-            String [] arr = result.split("#");
-            stock = arr[1];
-            price = arr[0];
-
-            System.out.println("stock:"+stock+"\n price:"+price);
-
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        String json =  "{\"stock\":"+stock+","+"\"price\":"+price+"}";
+        Map<String, String> res =  stockService.findItem(item_id);
+        String json = "{\"stock\":"+res.get("stock")+","+"\"price\":"+res.get("price")+"}";
         return json;
     }
 
     @PostMapping("/stock/subtract/{item_id}/{number}")
     public String subtractStock(@PathVariable(name="item_id") String item_id, @PathVariable(name="number") Integer number) {
-        String stock = "";
-        String result = "";
-        try (ActorClient client = new ActorClient()) {
-            ActorProxyBuilder<StockActor> builder = new ActorProxyBuilder(StockActor.class, client);
-//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
-            ExecutorService threadPool = Executors.newSingleThreadExecutor();
-
-            ActorId actorId = new ActorId(item_id);
-            StockActor actor = builder.build(actorId);
-            Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 3, number));
-            result = future.get();
-            String [] arr = result.split("#");
-            stock = arr[1];
-            System.out.println("Subtract - controller, done");
-
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        String json =  "{\"user_id\":"+item_id+","+"\"stock\":"+stock+"}";
+        Map<String, String> res =  stockService.subtractStock(item_id, number);
+        String json = "{\"item_id\":"+res.get("item_id")+","+"\"stock\":"+res.get("stock")+"}";
         return json;
     }
 
     @RequestMapping("/stock/add/{item_id}/{number}")
     public String addStock(@PathVariable(name="item_id") String item_id, @PathVariable(name="number") Integer number) {
-        String stock = "";
-        String result = "";
-        try (ActorClient client = new ActorClient()) {
-            ActorProxyBuilder<StockActor> builder = new ActorProxyBuilder(StockActor.class, client);
-//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
-            ExecutorService threadPool = Executors.newSingleThreadExecutor();
-
-            ActorId actorId = new ActorId(item_id);
-            StockActor actor = builder.build(actorId);
-            Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 4, number));
-            result = future.get();
-            String [] arr = result.split("#");
-            stock = arr[1];
-            System.out.println("Add - controller, done");
-
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        String json = "{\"user_id\":"+item_id+","+"\"stock\":"+stock+"}";
+        Map<String, String> res =  stockService.addStock(item_id, number);
+        String json = "{\"item_id\":"+res.get("item_id")+","+"\"stock\":"+res.get("stock")+"}";
         return json;
     }
 
     @PostMapping("/stock/item/create/{price}")
-    public String creatItem(@PathVariable(name="price") Double price) {
-        String item_id = "";
-        try (ActorClient client = new ActorClient()) {
-            ActorProxyBuilder<StockActor> builder = new ActorProxyBuilder(StockActor.class, client);
-//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
-            ExecutorService threadPool = Executors.newSingleThreadExecutor();
-//            UUID uuid = UUID.randomUUID();
-//            ActorId actorId = new ActorId(uuid.toString());
-            ActorId actorId = ActorId.createRandom();
-            StockActor actor = builder.build(actorId);
-
-            Future<String> future = threadPool.submit(new StockCallActor(actorId.toString(), actor, 1, price));
-
-            item_id = future.get();
-
-            System.out.println("Got item id:"+item_id);
-            System.out.println("price: "+ price);
-
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        String json =  "{\"item_id\":"+item_id+"}";
+    public String createItem(@PathVariable(name="price") Double price) {
+        String json =  stockService.createItem(price);
         return json;
     }
 }
