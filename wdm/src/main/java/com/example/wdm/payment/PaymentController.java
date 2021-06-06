@@ -19,7 +19,8 @@ public class PaymentController {
 
 //    private static final int NUM_ACTORS = 3;
 
-    @PostMapping("/payment/pay/{user_id}/{order_id}/{amount}")
+    @PostMapping(value="/payment/pay/{user_id}/{order_id}/{amount}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String postPayment(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Double amount) {
         Map<String,String> res=PaymentService.postPayment(user_id,amount);
         JSONObject result = new JSONObject();
@@ -30,7 +31,8 @@ public class PaymentController {
 //        return json;
     }
 
-    @PostMapping("/payment/cancel/{user_id}/{order_id}")
+    @PostMapping(value="/payment/cancel/{user_id}/{order_id}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String cancelPayment(@PathVariable(name="user_id") String user_id, @PathVariable(name="order_id") String order_id) {
 
         String res=PaymentService.cancelPayment(user_id,order_id);
@@ -40,7 +42,8 @@ public class PaymentController {
 //        return result;
     }
 
-    @GetMapping("/payment/status/{order_id}")
+    @GetMapping(value = "/payment/status/{order_id}",produces ="application/json;charset=UTF-8")
+    @ResponseBody
     public String getPaymentStatus(@PathVariable(name="order_id") String order_id) {
 
         String res=PaymentService.getPaymentStatus(order_id);
@@ -49,7 +52,8 @@ public class PaymentController {
         return result.toJSONString();
     }
 
-    @PostMapping("/payment/add_funds/{user_id}/{amount}")
+    @PostMapping(value="/payment/add_funds/{user_id}/{amount}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String addFunds(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Double amount) {
         System.out.println("amount: "+amount);
         Map<String,String> res=PaymentService.addFunds(user_id,amount);
@@ -60,7 +64,8 @@ public class PaymentController {
 //        String json =  "{\"user_id\":"+result.get("user_id")+","+"\"credit\":"+result.get("credit")+"}";
 //        return json;
     }
-    @PostMapping("/payment/create_user")
+    @PostMapping(value="/payment/create_user",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String createUser() {
         Map<String,String> res=PaymentService.createUser();
         JSONObject result = new JSONObject();
@@ -70,7 +75,8 @@ public class PaymentController {
 //        return json;
     }
 
-    @GetMapping("/payment/find_user/{user_id}")
+    @GetMapping(value="/payment/find_user/{user_id}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String findUser(@PathVariable(name="user_id") String user_id) {
         Map<String,String> res=PaymentService.findUser(user_id);
         JSONObject result = new JSONObject();

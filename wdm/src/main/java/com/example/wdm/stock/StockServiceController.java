@@ -21,7 +21,8 @@ import java.util.Map;
 public class StockServiceController {
     StockService stockService = new StockService();
 
-    @GetMapping("/stock/find/{item_id}")
+    @GetMapping(value="/stock/find/{item_id}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String findItem(@PathVariable(name="item_id") String item_id) {
         Map<String, String> res =  stockService.findItem(item_id);
         //System.out.println(res.get("stock"));
@@ -33,7 +34,8 @@ public class StockServiceController {
 //        return json;
     }
 
-    @PostMapping("/stock/subtract/{item_id}/{number}")
+    @PostMapping(value="/stock/subtract/{item_id}/{number}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String subtractStock(@PathVariable(name="item_id") String item_id, @PathVariable(name="number") Integer number) {
         Map<String, String> res =  stockService.subtractStock(item_id, number);
         //String json = "{\"item_id\":"+res.get("item_id")+","+"\"stock\":"+res.get("stock")+"}";
@@ -45,7 +47,8 @@ public class StockServiceController {
 //        return json;
     }
 
-    @RequestMapping("/stock/add/{item_id}/{number}")
+    @RequestMapping(value="/stock/add/{item_id}/{number}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String addStock(@PathVariable(name="item_id") String item_id, @PathVariable(name="number") Integer number) {
         Map<String, String> res =  stockService.addStock(item_id, number);
         JSONObject result = new JSONObject();

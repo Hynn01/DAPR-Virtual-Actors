@@ -9,7 +9,8 @@ import java.util.Map;
 @RestController
 public class OrderController {
     OrderService orderService = new OrderService();
-    @PostMapping("/orders/create/{user_id}")
+    @PostMapping(value="/orders/create/{user_id}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String create_order(@PathVariable(name = "user_id") String user_id) {
         Map<String,String> res=orderService.createOrderService(user_id);
         JSONObject result = new JSONObject();
@@ -19,7 +20,8 @@ public class OrderController {
 //        return json;
     }
 
-    @DeleteMapping("/orders/remove/{order_id}")
+    @DeleteMapping(value="/orders/remove/{order_id}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String remove_order(@PathVariable(name = "order_id") String order_id) {
         Map<String,String> res=orderService.removeOrderService(order_id);
         JSONObject result = new JSONObject();
@@ -29,7 +31,8 @@ public class OrderController {
 //        return result;
     }
 
-    @RequestMapping("/orders/find/{order_id}")
+    @RequestMapping(value="/orders/find/{order_id}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String find_order(@PathVariable(name = "order_id") String order_id) {
 
         JSONObject result = new JSONObject();
@@ -53,7 +56,8 @@ public class OrderController {
         return result.toJSONString();
     }
 
-    @PostMapping("/orders/addItem/{order_id}/{item_id}")
+    @PostMapping(value="/orders/addItem/{order_id}/{item_id}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String addOrders(@PathVariable(name = "order_id") String order_id, @PathVariable(name = "item_id") String item_id) {
         Map<String,String> res = orderService.addOrderService(order_id, item_id);
         JSONObject result = new JSONObject();
@@ -64,7 +68,8 @@ public class OrderController {
 //        return result;
     }
 
-    @DeleteMapping("/orders/removeItem/{order_id}/{item_id}")
+    @DeleteMapping(value="/orders/removeItem/{order_id}/{item_id}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String remove_item(@PathVariable(name = "order_id") String order_id, @PathVariable(name = "item_id") String item_id) {
         Map<String,String> mapResult = orderService.removeOrderService(order_id,item_id);
         JSONObject res = new JSONObject();
@@ -75,7 +80,8 @@ public class OrderController {
 //        return result;
     }
 
-    @PostMapping("/orders/checkout/{order_id}")
+    @PostMapping(value="/orders/checkout/{order_id}",produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String checkout(@PathVariable(name = "order_id") String order_id) {
         String paymentResult = new String();
         String stockResult = orderService.checkout(order_id).get("result");
