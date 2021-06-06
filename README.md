@@ -31,3 +31,10 @@ curl -X POST 127.0.0.1:8080/payment/pay/{user_id}/{order_id}/{amount}
 curl -X GET 127.0.0.1:8080/payment/status/{order_id}
 
 curl -X POST 127.0.0.1:8080/payment/cancel/{user_id}/{order_id}
+
+----------------------------------------------------------
+
+docker-compose build
+
+docker-compose up
+
