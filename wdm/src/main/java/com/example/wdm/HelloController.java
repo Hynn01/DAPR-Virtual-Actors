@@ -32,6 +32,15 @@ public class HelloController {
 
     }
 
+    @RequestMapping("/hi")
+    public String hi() {
+
+        String user_id="2";
+        String json =  "{\"user_id\":"+user_id+"}";
+        return json;
+
+    }
+
 //    @GetMapping("/order")
 //    public String getorder() {
 //

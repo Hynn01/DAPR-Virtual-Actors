@@ -1,10 +1,12 @@
 package com.example.wdm.stock;
 import io.dapr.actors.client.ActorClient;
+import net.minidev.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 import io.dapr.actors.ActorId;
 import io.dapr.actors.client.ActorClient;
 import io.dapr.actors.client.ActorProxyBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -42,9 +44,16 @@ public class StockServiceController {
         return json;
     }
 
-    @PostMapping("/stock/item/create/{price}")
+    @PostMapping(value={"/stock/item/create/{price}"},produces="application/json;charset=UTF-8")
+    @ResponseBody
     public String createItem(@PathVariable(name="price") Double price) {
-        String json =  stockService.createItem(price);
-        return json;
+
+        Map<String,String> res =  stockService.createItem(price);
+        JSONObject result = new JSONObject();
+//        result.put("msg", "ok");
+//        result.put("method", "@ResponseBody");
+        result.put("item_id", res.get("item_id"));
+
+        return result.toJSONString();
     }
 }

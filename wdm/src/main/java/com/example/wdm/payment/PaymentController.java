@@ -1,6 +1,7 @@
 package com.example.wdm.payment;
 
 import io.dapr.actors.client.ActorClient;
+import net.minidev.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import io.dapr.actors.ActorId;
@@ -20,43 +21,63 @@ public class PaymentController {
 
     @PostMapping("/payment/pay/{user_id}/{order_id}/{amount}")
     public String postPayment(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Double amount) {
-        Map<String,String> result=PaymentService.postPayment(user_id,amount);
-        String json =  "{\"user_id\":"+result.get("user_id")+","+"\"credit\":"+result.get("credit")+"}";
-        return json;
+        Map<String,String> res=PaymentService.postPayment(user_id,amount);
+        JSONObject result = new JSONObject();
+        result.put("user_id", res.get("user_id"));
+        result.put("credit", res.get("credit"));
+        return result.toJSONString();
+//        String json =  "{\"user_id\":"+result.get("user_id")+","+"\"credit\":"+result.get("credit")+"}";
+//        return json;
     }
 
     @PostMapping("/payment/cancel/{user_id}/{order_id}")
     public String cancelPayment(@PathVariable(name="user_id") String user_id, @PathVariable(name="order_id") String order_id) {
 
-        String result=PaymentService.cancelPayment(user_id,order_id);
-        return result;
+        String res=PaymentService.cancelPayment(user_id,order_id);
+        JSONObject result = new JSONObject();
+        result.put("status", res);
+        return result.toJSONString();
+//        return result;
     }
 
     @GetMapping("/payment/status/{order_id}")
     public String getPaymentStatus(@PathVariable(name="order_id") String order_id) {
 
-        String result=PaymentService.getPaymentStatus(order_id);
-        return result;
+        String res=PaymentService.getPaymentStatus(order_id);
+        JSONObject result = new JSONObject();
+        result.put("status", res);
+        return result.toJSONString();
     }
 
     @PostMapping("/payment/add_funds/{user_id}/{amount}")
     public String addFunds(@PathVariable(name="user_id") String user_id, @PathVariable(name="amount") Double amount) {
         System.out.println("amount: "+amount);
-        Map<String,String> result=PaymentService.addFunds(user_id,amount);
-        String json =  "{\"user_id\":"+result.get("user_id")+","+"\"credit\":"+result.get("credit")+"}";
-        return json;
+        Map<String,String> res=PaymentService.addFunds(user_id,amount);
+        JSONObject result = new JSONObject();
+        result.put("user_id", res.get("user_id"));
+        result.put("credit", res.get("credit"));
+        return result.toJSONString();
+//        String json =  "{\"user_id\":"+result.get("user_id")+","+"\"credit\":"+result.get("credit")+"}";
+//        return json;
     }
     @PostMapping("/payment/create_user")
     public String createUser() {
-        Map<String,String> result=PaymentService.createUser();
-        String json =  "{\"user_id\":"+result.get("user_id")+"}";
-        return json;
+        Map<String,String> res=PaymentService.createUser();
+        JSONObject result = new JSONObject();
+        result.put("user_id", res.get("user_id"));
+        return result.toJSONString();
+//        String json =  "{\"user_id\":"+result.get("user_id")+"}";
+//        return json;
     }
 
     @GetMapping("/payment/find_user/{user_id}")
     public String findUser(@PathVariable(name="user_id") String user_id) {
-        Map<String,String> result=PaymentService.findUser(user_id);
-        String json =  "{\"user_id\":"+result.get("user_id")+","+"\"credit\":"+result.get("credit")+"}";
-        return json;
+        Map<String,String> res=PaymentService.findUser(user_id);
+        JSONObject result = new JSONObject();
+        result.put("user_id", res.get("user_id"));
+        result.put("credit", res.get("credit"));
+        return result.toJSONString();
+//        String json =  "{\"user_id\":"+result.get("user_id")+","+"\"credit\":"+result.get("credit")+"}";
+//        return json;
     }
 }

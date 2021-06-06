@@ -110,7 +110,7 @@ public class StockService{
         return res;
     }
 
-    public String createItem(Double price) {
+    public Map<String,String> createItem(Double price) {
         String item_id = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<StockActor> builder = new ActorProxyBuilder(StockActor.class, client);
@@ -131,7 +131,13 @@ public class StockService{
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        String json =  "{\"item_id\":"+item_id+"}";
-        return json;
+
+        Map<String,String> res =new HashMap<String, String>();
+        res.put("item_id",item_id);
+//        res.put("item_id",item_id);
+        return res;
+
+//        String json =  "{\'item_id\':\'"+item_id+"\'}";
+//        return json;
     }
 }
