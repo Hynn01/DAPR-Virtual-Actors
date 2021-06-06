@@ -10,6 +10,7 @@ services:
     depends_on:
       - redis
       - placement
+      - zipkin
       - orderservice
       - stockservice
       - paymentservice
@@ -20,10 +21,9 @@ services:
     command: ["./daprd",
      "-app-id", "webapp",
      "-placement-host-address", "placement:50006",
-     "-dapr-grpc-port", "50002",
      "-components-path", "/components/actors"]
     volumes:
-        - "./components/:/components"
+        - "./components/actors/:/components/actors"
     depends_on:
       - webapp
     network_mode: "service:webapp"
@@ -35,6 +35,7 @@ services:
     depends_on:
       - redis
       - placement
+      - zipkin
     networks:
       - hello-dapr
   orderservice-dapr:
@@ -45,7 +46,7 @@ services:
     "-placement-host-address", "placement:50006",
      "-components-path", "/components/actors"]
     volumes:
-      - "./components/:/components"
+      - "./components/actors/:/components/actors"
     depends_on:
       - orderservice
     network_mode: "service:orderservice"
@@ -57,6 +58,7 @@ services:
     depends_on:
       - redis
       - placement
+      - zipkin
     networks:
       - hello-dapr
   stockservice-dapr:
@@ -67,7 +69,7 @@ services:
     "-placement-host-address", "placement:50006",
      "-components-path", "/components/actors"]
     volumes:
-      - "./components/:/components"
+      - "./components/actors/:/components/actors"
     depends_on:
       - stockservice
     network_mode: "service:stockservice"
@@ -79,6 +81,7 @@ services:
     depends_on:
       - redis
       - placement
+      - zipkin
     networks:
       - hello-dapr
   paymentservice-dapr:
@@ -89,7 +92,7 @@ services:
     "-placement-host-address", "placement:50006",
      "-components-path", "/components/actors"]
     volumes:
-      - "./components/:/components"
+      - "./components/actors/:/components/actors"
     depends_on:
       - paymentservice
     network_mode: "service:paymentservice" 
@@ -109,8 +112,17 @@ services:
   redis:
     image: "redis:alpine"
     ports:
-      - "6380:6379"
+      - "6379:6379"
     networks:
       - hello-dapr
+  ############################
+  # zipkin
+  ############################
+  zipkin:
+    image: "openzipkin/zipkin"
+    ports:
+      - "9411:9411"
+    networks:
+      - hello-dapr      
 networks:
     hello-dapr:
