@@ -25,23 +25,35 @@ public class StockServiceController {
     public String findItem(@PathVariable(name="item_id") String item_id) {
         Map<String, String> res =  stockService.findItem(item_id);
         //System.out.println(res.get("stock"));
-        String json = "{\"stock\":"+res.get("stock")+","+"\"price\":"+res.get("price")+"}";
-        return json;
+        JSONObject result = new JSONObject();
+        result.put("stock", res.get("stock"));
+        result.put("price", res.get("price"));
+        return result.toJSONString();
+//        String json = "{\"stock\":"+res.get("stock")+","+"\"price\":"+res.get("price")+"}";
+//        return json;
     }
 
     @PostMapping("/stock/subtract/{item_id}/{number}")
     public String subtractStock(@PathVariable(name="item_id") String item_id, @PathVariable(name="number") Integer number) {
         Map<String, String> res =  stockService.subtractStock(item_id, number);
         //String json = "{\"item_id\":"+res.get("item_id")+","+"\"stock\":"+res.get("stock")+"}";
-        String json = "{\"item_id\":"+res.get("item_id")+","+"\"stock\":"+res.get("stock")+"}";
-        return json;
+        JSONObject result = new JSONObject();
+        result.put("item_id", res.get("item_id"));
+        result.put("stock", res.get("stock"));
+        return result.toJSONString();
+//        String json = "{\"item_id\":"+res.get("item_id")+","+"\"stock\":"+res.get("stock")+"}";
+//        return json;
     }
 
     @RequestMapping("/stock/add/{item_id}/{number}")
     public String addStock(@PathVariable(name="item_id") String item_id, @PathVariable(name="number") Integer number) {
         Map<String, String> res =  stockService.addStock(item_id, number);
-        String json = "{\"item_id\":"+res.get("item_id")+","+"\"stock\":"+res.get("stock")+"}";
-        return json;
+        JSONObject result = new JSONObject();
+        result.put("item_id", res.get("item_id"));
+        result.put("stock", res.get("stock"));
+        return result.toJSONString();
+//        String json = "{\"item_id\":"+res.get("item_id")+","+"\"stock\":"+res.get("stock")+"}";
+//        return json;
     }
 
     @PostMapping(value={"/stock/item/create/{price}"},produces="application/json;charset=UTF-8")
