@@ -1,0 +1,116 @@
+version: '3'
+services:
+  ############################
+  # web app + Dapr sidecar
+  ############################
+  webapp:
+    build: ./deployment/webapp
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - placement
+      - orderservice
+      - stockservice
+      - paymentservice
+    networks:
+      - hello-dapr
+  webapp-dapr:
+    image: "daprio/daprd:edge"
+    command: ["./daprd",
+     "-app-id", "webapp",
+     "-placement-host-address", "placement:50006",
+     "-dapr-grpc-port", "50002",
+     "-components-path", "/components/actors"]
+    volumes:
+        - "./components/:/components"
+    depends_on:
+      - webapp
+    network_mode: "service:webapp"
+  ############################
+  # order service + Dapr sidecar
+  ############################
+  orderservice:
+    build: ./deployment/orderservice
+    depends_on:
+      - redis
+      - placement
+    networks:
+      - hello-dapr
+  orderservice-dapr:
+    image: "daprio/daprd:edge"
+    command: ["./daprd",
+    "-app-id", "orderservice",
+    "-app-port","3000",
+    "-placement-host-address", "placement:50006",
+     "-components-path", "/components/actors"]
+    volumes:
+      - "./components/:/components"
+    depends_on:
+      - orderservice
+    network_mode: "service:orderservice"
+  ############################
+  # stock service + Dapr sidecar
+  ############################
+  stockservice:
+    build: ./deployment/stockservice
+    depends_on:
+      - redis
+      - placement
+    networks:
+      - hello-dapr
+  stockservice-dapr:
+    image: "daprio/daprd:edge"
+    command: ["./daprd",
+    "-app-id", "stockservice",
+    "-app-port","3001",
+    "-placement-host-address", "placement:50006",
+     "-components-path", "/components/actors"]
+    volumes:
+      - "./components/:/components"
+    depends_on:
+      - stockservice
+    network_mode: "service:stockservice"
+  ############################
+  # payment service + Dapr sidecar
+  ############################
+  paymentservice:
+    build: ./deployment/paymentservice
+    depends_on:
+      - redis
+      - placement
+    networks:
+      - hello-dapr
+  paymentservice-dapr:
+    image: "daprio/daprd:edge"
+    command: ["./daprd",
+    "-app-id", "paymentservice",
+    "-app-port","3002",
+    "-placement-host-address", "placement:50006",
+     "-components-path", "/components/actors"]
+    volumes:
+      - "./components/:/components"
+    depends_on:
+      - paymentservice
+    network_mode: "service:paymentservice" 
+  ############################
+  # Dapr placement service
+  ############################
+  placement:
+    image: "daprio/dapr"
+    command: ["./placement", "-port", "50006"]
+    ports:
+      - "50006:50006"
+    networks:
+      - hello-dapr
+  ############################
+  # Redis state store
+  ############################
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6380:6379"
+    networks:
+      - hello-dapr
+networks:
+    hello-dapr:
