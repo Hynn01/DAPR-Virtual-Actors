@@ -29,12 +29,12 @@ def load_pickle_file(file_name: str) -> Union[List[str], str]:
         return var
 
 
-def get_user_credit(user_id: str) -> Tuple[str, float]:
+def get_user_credit(user_id: str) -> Tuple[str, int]:
     credit = float(requests.get(f"{PAYMENT_URL}/payment/find_user/{user_id}", json={}).json()['credit'])
     return user_id, credit
 
 
-def get_user_credit_dict(user_id_list: List[str]) -> Dict[str, float]:
+def get_user_credit_dict(user_id_list: List[str]) -> Dict[str, int]:
     with ThreadPool(10) as pool:
         user_id_credit = dict(pool.map(get_user_credit, user_id_list))
     return user_id_credit
@@ -83,7 +83,7 @@ def verify_systems_consistency():
     pus: dict = parse_log(get_prior_user_state())
     uic: dict = get_user_credit_dict(load_pickle_file('tmp/user_ids.pkl'))
     iis: dict = get_item_stock_dict(load_pickle_file('tmp/item_ids.pkl'))
-    server_side_items_bought: int = 10 - list(iis.values())[0]
+    server_side_items_bought: int = 100 - list(iis.values())[0]
     logger.info(f"Stock service inconsistencies in the database: {server_side_items_bought - NUMBER_0F_ITEMS}")
     logged_user_credit: float = sum(pus.values())
     logger.info(f"Payment service inconsistencies in the logs: {abs(CORRECT_USER_STATE - logged_user_credit)}")
