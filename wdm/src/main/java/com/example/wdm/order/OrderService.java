@@ -143,7 +143,7 @@ public class OrderService {
 
             ActorId actorId = new ActorId(order_id);
             OrderActor actor = builder.build(actorId);
-            Future<String> future = threadPool.submit(new OrderCallActor(actorId.toString(), actor, 6));
+            Future<String> future = threadPool.submit(new OrderCallActor(actorId.toString(), actor, 7));
             result = future.get();
 
         } catch (Exception e) {

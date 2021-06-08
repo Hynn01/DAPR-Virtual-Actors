@@ -70,6 +70,10 @@ public class OrderCallActor implements Callable {
             case 6:{
                 result = actor.checkout(item_id).block().toString();
             }
+            case 7: {
+                result = actor.set_status_false(order_id).block().toString();
+                break;
+            }
         }
         return result;
     }
