@@ -158,6 +158,7 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
 
     @Override
     public Mono<String> checkout(String order_id) {
+        System.out.println("start checkout with " + order_id);
         ArrayList<String> res = new ArrayList<>();
         String stockRes = "Sufficient stock";
         String paymentRes = "Enough credit";
@@ -173,6 +174,7 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         PaymentService paymentService = new PaymentService();
         double total_cost = super.getActorStateManager().get("total_cost", Double.class).block();
         Map<String, String> tempMap = paymentService.postPayment(super.getActorStateManager().get("user_id", String.class).block(), total_cost);
+        System.out.println("order:" + order_id + "belong to user:" + super.getActorStateManager().get("user_id", String.class).block() + "has totalcost of"+ total_cost);
         if(tempMap.get("credit").equals("-1")){paymentRes = "user don't hold enough credit";}
         else{
             String tempKey = "";
@@ -199,6 +201,7 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
                 }
             }
         }
+        if((stockRes + paymentRes).equals("Sufficient stockEnough credit")){super.getActorStateManager().set("paid", true).block();}
         this.unregisterReminder("myremind").block();
         return Mono.just(stockRes + paymentRes);
     }
