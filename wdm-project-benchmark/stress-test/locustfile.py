@@ -19,7 +19,12 @@ def create_item(session):
     with session.client.post(f"{STOCK_URL}/stock/item/create/{price}", name="/stock/item/create/[price]",
                              catch_response=True) as response:
         try:
+            print(111)
+            print(response.text)
+            print(222)
+            print(response.json())
             item_id = response.json()['item_id']
+            print(item_id)
         except json.JSONDecodeError:
             response.failure("SERVER ERROR")
         else:

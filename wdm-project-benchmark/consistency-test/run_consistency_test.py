@@ -33,7 +33,7 @@ logger.info("Databases populated")
 # Run the load test
 logger.info("Starting the load test...")
 subprocess.call(["locust", "-f", "locustfile.py", "--host=''", "--logfile=tmp/consistency-test.log", "--headless",
-                 "-u", "100", "-r", "100", f"--run-time={STRESS_TEST_EXECUTION_TIME}s"],
+                 "-u", "1000", "-r", "1000", f"--run-time={STRESS_TEST_EXECUTION_TIME}s"],
                 stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
 logger.info("Load test completed")
 

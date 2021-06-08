@@ -87,5 +87,5 @@ class ConsistencyTest(SequentialTaskSet):
 
 
 class MicroservicesUser(HttpUser):
-    tasks = {ConsistencyTest: 10}
+    tasks = {ConsistencyTest: 100}
     wait_time = constant(1)  # how much time a user waits (seconds) to run another SequentialTaskSet
