@@ -28,7 +28,7 @@ def create_user_offline(balance: int) -> str:
     return str(user_id)
 
 
-def create_item_offline(stock_to_add: int, price: float = 1) -> str:
+def create_item_offline(stock_to_add: int, price: int = 1) -> str:
     __item_id = requests.post(f"{STOCK_URL}/stock/item/create/{price}", json={}).json()['item_id']
     requests.post(f"{STOCK_URL}/stock/add/{__item_id}/{stock_to_add}", json={})
     return str(__item_id)
@@ -40,7 +40,7 @@ def create_items_offline(number_of_items: int, stock: int = 1) -> List[str]:
     return __item_ids
 
 
-def create_users_offline(number_of_users: int, credit: float = 1) -> List[str]:
+def create_users_offline(number_of_users: int, credit: int = 1) -> List[str]:
     with ThreadPool(10) as pool:
         __user_ids = list(pool.map(create_user_offline, repeat(credit, number_of_users)))
     return __user_ids

@@ -19,12 +19,7 @@ def create_item(session):
     with session.client.post(f"{STOCK_URL}/stock/item/create/{price}", name="/stock/item/create/[price]",
                              catch_response=True) as response:
         try:
-            print(111)
-            print(response.text)
-            print(222)
-            print(response.json())
             item_id = response.json()['item_id']
-            print(item_id)
         except json.JSONDecodeError:
             response.failure("SERVER ERROR")
         else:
@@ -65,6 +60,7 @@ def add_item_to_order(session, item_idx: int):
     with session.client.post(f"{ORDER_URL}/orders/addItem/{session.order_id}/{session.item_ids[item_idx]}",
                              name="/orders/addItem/[order_id]/[item_id]", catch_response=True) as response:
         if 400 <= response.status_code < 500:
+            print("hh",response.status_code)
             response.failure(response.text)
         else:
             response.success()
