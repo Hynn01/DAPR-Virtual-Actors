@@ -1,7 +1,9 @@
 package com.example.wdm.order;
 
 import net.minidev.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import com.example.wdm.Exception.OrderException;
 
 import java.util.Map;
 
@@ -82,15 +84,19 @@ public class OrderController {
 
     @PostMapping(value="/orders/checkout/{order_id}",produces="application/json;charset=UTF-8")
     @ResponseBody
-    public String checkout(@PathVariable(name = "order_id") String order_id) {
+    public String checkout(@PathVariable(name = "order_id") String order_id) throws OrderException{
         String paymentResult = new String();
         String stockResult = orderService.checkout(order_id).get("result");
+        System.out.println("1"+stockResult);
+        if(!stockResult.equals("Sufficient stockEnough credit")){
+            throw new OrderException();
+        }
         JSONObject result = new JSONObject();
         result.put("result", stockResult);
+        System.out.println("3"+stockResult);
         return result.toJSONString();
 //        return stockResult;
     }
-
 }
 
 

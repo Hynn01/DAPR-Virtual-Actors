@@ -60,7 +60,7 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         super.getActorStateManager().add("paid", false).block();
         super.getActorStateManager().add("items", items).block();
         super.getActorStateManager().add("user_id", user_id).block();
-        super.getActorStateManager().add("total_cost", 0).block();
+        super.getActorStateManager().add("total_cost", 0.0d).block();
         result = this.getId().toString();
         this.unregisterReminder("myremind").block();
         return Mono.just(result);
@@ -159,8 +159,8 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
     @Override
     public Mono<String> checkout(String order_id) {
         ArrayList<String> res = new ArrayList<>();
-        String stockRes = "sufficient stock";
-        String paymentRes = "enough credit";
+        String stockRes = "Sufficient stock";
+        String paymentRes = "Enough credit";
         ArrayList<String> items = super.getActorStateManager().get("items", ArrayList.class).block();
         HashMap<String, Integer> item_set = new HashMap<>();
         for(String item: items){
@@ -170,20 +170,36 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
                 item_set.put(item, temp + 1);
             }
         }
-        for(String key: item_set.keySet()){
+        PaymentService paymentService = new PaymentService();
+        double total_cost = super.getActorStateManager().get("total_cost", Double.class).block();
+        Map<String, String> tempMap = paymentService.postPayment(super.getActorStateManager().get("user_id", String.class).block(), total_cost);
+        if(tempMap.get("credit").equals("-1")){paymentRes = "user don't hold enough credit";}
+        else{
+            String tempKey = "";
             StockService stockService = new StockService();
-            Map<String,String> tempMap =new HashMap<String, String>();
-            tempMap = stockService.subtractStock(key, item_set.get(key));
-            if(Integer.parseInt(tempMap.get("stock"))<0){
-                stockRes = "Insufficient stock";
-                break;
+            for(String key: item_set.keySet()){
+                tempMap = stockService.subtractStock(key, item_set.get(key));
+                if(Integer.parseInt(tempMap.get("stock"))<0){
+                    stockRes = "Insufficient stock";
+                    tempKey = key;
+                    break;
+                }
+            }
+//        recover stock dataset if checkout fails
+            if(stockRes.equals("Insufficient stock")){
+                tempMap = paymentService.addFunds(super.getActorStateManager().get("user_id", String.class).block(), total_cost);
+                for(String key: item_set.keySet()){
+                    if(!key.equals(tempKey)){
+                        tempMap = stockService.addStock(key, item_set.get(key));
+                    }
+                    else{
+                        tempMap = stockService.addStock(tempKey, item_set.get(tempKey));
+                        break;
+                    }
+                }
             }
         }
-        PaymentService paymentService = new PaymentService();
-        Map<String, String> temp = paymentService.findUser(super.getActorStateManager().get("user_id", String.class).block());
-        double credit = Double.parseDouble(temp.get("credit"));
-        double total_cost = super.getActorStateManager().get("total_cost", Double.class).block();
-        if(credit < total_cost){paymentRes = "user don't hold enough credit";}
+        this.unregisterReminder("myremind").block();
         return Mono.just(stockRes + paymentRes);
     }
 

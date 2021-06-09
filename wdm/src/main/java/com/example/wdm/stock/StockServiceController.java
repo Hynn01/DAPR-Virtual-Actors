@@ -62,7 +62,7 @@ public class StockServiceController {
     @PostMapping(value={"/stock/item/create/{price}"},produces="application/json;charset=UTF-8")
     @ResponseBody
     public String createItem(@PathVariable(name="price") Double price) {
-
+        System.out.println("create item");
         Map<String,String> res =  stockService.createItem(price);
         JSONObject result = new JSONObject();
 //        result.put("msg", "ok");
