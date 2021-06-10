@@ -68,7 +68,8 @@ public class OrderCallActor implements Callable {
                 break;
             }
             case 6:{
-                result = actor.checkout(item_id).block().toString();
+                System.out.println("checkout"+order_id);
+                result = actor.checkout(order_id).block().toString();
             }
         }
         return result;

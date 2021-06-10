@@ -56,34 +56,24 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
     System.out.println("service:create item:"+this.getId());
     super.getActorStateManager().add("price", price).block();
     super.getActorStateManager().add("stock", 0).block();
-    super.getActorStateManager().add("id", this.getId().toString()).block();
+//    super.getActorStateManager().add("id", this.getId().toString()).block();
     this.unregisterReminder("myremind").block();
     return Mono.just(this.getId().toString());
   }
 
   @Override
   public Mono<String> findItem() {
-    return super.getActorStateManager().contains("id").flatMap(idExists -> {
-      if (idExists){
-        String id = super.getActorStateManager().get("id", String.class).block();
-        System.out.println(id);
         Double price = super.getActorStateManager().get("price", Double.class).block();
         System.out.println(price);
         Integer stock = super.getActorStateManager().get("stock", Integer.class).block();
         String result = price.toString()+"#"+stock.toString();
         this.unregisterReminder("myremind").block();
         return Mono.just(result);
-      }else{
-        return Mono.just("Invalid ID!");
-      }
-    });
   }
 
   @Override
   public Mono<String> subtractStock(Integer number) {
-    return super.getActorStateManager().contains("id").flatMap(idExists -> {
-      if (idExists){
-        int stock = super.getActorStateManager().get("stock", int.class).block();
+    int stock = super.getActorStateManager().get("stock", int.class).block();
         int newStock = stock - number;
         //super.getActorStateManager().set("stock", newStock).block();
         System.out.println("new credit: "+newStock);
@@ -91,30 +81,18 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
         this.unregisterReminder("myremind").block();
         //ActorRuntime.getInstance().deactivate("StockActor",this.getId().toString()).block();
         return Mono.just(Integer.toString(newStock));
-      }else{
-        return Mono.just("Invalid ID!");
-      }
-    });
-
 
   }
 
   @Override
   public Mono<String> addStock(Integer number) {
-    return super.getActorStateManager().contains("id").flatMap(idExists -> {
-      if (idExists){
-        int stock = super.getActorStateManager().get("stock", int.class).block();
-        int newStock = stock + number;
+      int stock = super.getActorStateManager().get("stock", int.class).block();
+      int newStock = stock + number;
         //super.getActorStateManager().set("stock", newStock).block();
-        System.out.println("new credit: "+newStock);
-        super.getActorStateManager().set("stock", newStock).block();
-        this.unregisterReminder("myremind").block();
-        //ActorRuntime.getInstance().deactivate("StockActor",this.getId().toString()).block();
-        return Mono.just(Integer.toString(newStock));
-      }else{
-        return Mono.just("Invalid ID!");
-      }
-    });
+      System.out.println("new credit: "+newStock);
+      super.getActorStateManager().set("stock", newStock).block();
+      this.unregisterReminder("myremind").block();
+      return Mono.just(Integer.toString(newStock));
   }
 
 

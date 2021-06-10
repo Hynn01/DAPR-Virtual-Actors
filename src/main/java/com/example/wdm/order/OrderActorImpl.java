@@ -117,6 +117,7 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         }
         else{
             StockService stockService = new StockService();
+            System.out.println("item_add"+item_id);
             Map<String, String> find_res = stockService.findItem(item_id);
             double cost = Double.parseDouble(find_res.get("price"));
             double totalCost = super.getActorStateManager().get("total_cost", Double.class).block();
@@ -158,8 +159,7 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
 
     @Override
     public Mono<String> checkout(String order_id) {
-        System.out.println("start checkout with " + order_id);
-        ArrayList<String> res = new ArrayList<>();
+        System.out.println("3 start checkout with " + super.getActorStateManager().get("order_id", String.class).block());
         String stockRes = "Sufficient stock";
         String paymentRes = "Enough credit";
         ArrayList<String> items = super.getActorStateManager().get("items", ArrayList.class).block();
@@ -180,6 +180,7 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
             String tempKey = "";
             StockService stockService = new StockService();
             for(String key: item_set.keySet()){
+                System.out.println("item"+key);
                 tempMap = stockService.subtractStock(key, item_set.get(key));
                 if(Integer.parseInt(tempMap.get("stock"))<0){
                     stockRes = "Insufficient stock";

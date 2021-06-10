@@ -36,9 +36,7 @@ public class StockService{
             String [] arr = result.split("#");
             stock = arr[1];
             price = arr[0];
-
             System.out.println("stock:"+stock+"\n price:"+price);
-
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

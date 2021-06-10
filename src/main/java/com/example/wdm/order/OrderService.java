@@ -160,7 +160,6 @@ public class OrderService {
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
-
             ActorId actorId = new ActorId(order_id);
             OrderActor actor = builder.build(actorId);
             Future<String> future =
