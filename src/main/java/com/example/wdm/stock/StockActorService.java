@@ -5,12 +5,9 @@
 
 package com.example.wdm.stock;
 
+import com.example.wdm.payment.PaymentActorImpl;
 import io.dapr.actors.runtime.ActorRuntime;
 import io.dapr.examples.DaprApplication;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
 
 import java.time.Duration;
 
@@ -33,11 +30,11 @@ public class StockActorService {
   public static void main(String[] args) throws Exception {
 //    Options options = new Options();
 //    options.addRequiredOption("p", "port", true, "Port the will listen to.");
-//
+
 //    CommandLineParser parser = new DefaultParser();
 //    CommandLine cmd = parser.parse(options, args);
-//
-//    // If port string is not valid, it will throw an exception.
+
+    // If port string is not valid, it will throw an exception.
 //    final int port = Integer.parseInt(cmd.getOptionValue("port"));
     final int port = 3001;
 

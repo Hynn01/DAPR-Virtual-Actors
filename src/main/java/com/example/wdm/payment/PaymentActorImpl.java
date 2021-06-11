@@ -122,6 +122,7 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
    */
   @Override
   public TypeRef<Integer> getStateType() {
+
     return TypeRef.INT;
   }
 
