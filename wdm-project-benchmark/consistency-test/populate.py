@@ -12,8 +12,8 @@ logging.basicConfig(level=logging.INFO,
                     format='%(levelname)s - %(asctime)s - %(name)s - %(message)s',
                     datefmt='%I:%M:%S')
 logger = logging.getLogger(__name__)
-NUMBER_0F_ITEMS = 100
-NUMBER_OF_USERS = 1000
+NUMBER_0F_ITEMS = 10
+NUMBER_OF_USERS = 100
 
 with open(os.path.join('..', 'urls.json')) as f:
     urls = json.load(f)
@@ -53,7 +53,7 @@ def write_pickle(file_name: str, var: Union[List[str], str]):
 
 def populate_databases():
     logger.info("Creating items ...")
-    item_id = create_item_offline(NUMBER_0F_ITEMS)  # create item with 100 stock
+    item_id = create_items_offline(NUMBER_0F_ITEMS)  # create item with 100 stock
     write_pickle('tmp/item_ids.pkl', item_id)
     logger.info("Items created")
 

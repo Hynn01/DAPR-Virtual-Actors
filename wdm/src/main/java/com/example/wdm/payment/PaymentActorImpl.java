@@ -76,6 +76,7 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
     System.out.println("credit_before: "+credit_before);
     if(credit_before - amount>=0){
       super.getActorStateManager().set("credit", credit_before - amount).block();
+      System.out.println("amount:"+amount);
       System.out.println("reduce");
     }
     Double credit_after = super.getActorStateManager().get("credit", Double.class).block();
