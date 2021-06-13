@@ -34,6 +34,8 @@ curl -X POST 127.0.0.1:8080/payment/cancel/{user_id}/{order_id}
 
 ----------------------------------------------------------
 
+Using this two commands, it's able to be deployed on google cloud now!
+
 docker-compose build
 
 docker-compose up
