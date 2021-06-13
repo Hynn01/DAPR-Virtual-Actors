@@ -1,0 +1,43 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: paymentservice
+  labels:
+    app: paymentservice
+spec:
+  selector:
+    app: paymentservice
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3002
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paymentservice
+  labels:
+    app: paymentservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paymentservice
+  template:
+    metadata:
+      labels:
+        app: paymentservice
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "paymentservice"
+        dapr.io/app-port: "3002"
+        dapr.io/config: "tracing"
+    spec:
+      containers:
+      - name: paymentservice
+        image: hynn/paymentservice:latest
+        ports:
+        - containerPort: 3002
+        imagePullPolicy: Always
