@@ -1,42 +1,42 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: orderservice
+  name: stockservice
   labels:
-    app: orderservice
+    app: stockservice
 spec:
   selector:
-    app: orderservice
+    app: stockservice
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 3000
+    targetPort: 3001
   type: LoadBalancer
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orderservice
+  name: stockservice
   labels:
-    app: orderservice
+    app: stockservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: orderservice
+      app: stockservice
   template:
     metadata:
       labels:
-        app: orderservice
+        app: stockservice
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/app-id: "orderservice"
-        dapr.io/app-port: "3000"
+        dapr.io/app-id: "stockservice"
+        dapr.io/app-port: "3001"
     spec:
       containers:
-      - name: orderservice
-        image: hynn/orderservice:latest
+      - name: stockservice
+        image: danyaow/stockservice:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 3001
         imagePullPolicy: Always
