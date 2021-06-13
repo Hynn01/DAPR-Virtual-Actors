@@ -33,11 +33,10 @@ spec:
         dapr.io/enabled: "true"
         dapr.io/app-id: "paymentservice"
         dapr.io/app-port: "3002"
-        dapr.io/config: "tracing"
     spec:
       containers:
       - name: paymentservice
-        image: hynn/paymentservice:latest
+        image: danyaow/paymentservice:latest
         ports:
         - containerPort: 3002
         imagePullPolicy: Always

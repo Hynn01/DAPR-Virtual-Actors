@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: orderservice
-        image: hynn/orderservice:latest
+        image: danyaow/orderservice:latest
         ports:
         - containerPort: 3000
         imagePullPolicy: Always
