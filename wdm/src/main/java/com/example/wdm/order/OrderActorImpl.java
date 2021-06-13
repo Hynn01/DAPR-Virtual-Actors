@@ -21,7 +21,6 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
      * Format to output date and time.
      */
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-
     /**
      * This is the constructor of an actor implementation, while also registering a timer.
      * @param runtimeContext The runtime context object which contains objects such as the state provider.
@@ -116,9 +115,12 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
             result = "there is no this order";
         }
         else{
-            StockService stockService = new StockService();
-            Map<String, String> find_res = stockService.findItem(item_id);
+            System.out.println("item_add"+item_id);
+            Map<String, String> find_user = PaymentService.findUser(super.getActorStateManager().get("user_id",String.class).block());
+            System.out.println(find_user.get("credit"));
+            Map<String, String> find_res = StockService.findItem(item_id);
             double cost = Double.parseDouble(find_res.get("price"));
+//            double cost = 1.0;
             double totalCost = super.getActorStateManager().get("total_cost", Double.class).block();
             totalCost = totalCost + cost;
             super.getActorStateManager().set("total_cost", totalCost).block();
@@ -140,8 +142,7 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
             result = "there is no this order";
         }
         else {
-            StockService stockService = new StockService();
-            Map<String, String> find_res = stockService.findItem(item_id);
+            Map<String, String> find_res = StockService.findItem(item_id);
             double cost = Double.parseDouble(find_res.get("price"));
             double totalCost = super.getActorStateManager().get("total_cost", Double.class).block();
             totalCost = totalCost - cost;
@@ -158,7 +159,7 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
 
     @Override
     public Mono<String> checkout(String order_id) {
-        ArrayList<String> res = new ArrayList<>();
+        System.out.println("3 start checkout with " + super.getActorStateManager().get("order_id", String.class).block());
         String stockRes = "Sufficient stock";
         String paymentRes = "Enough credit";
         ArrayList<String> items = super.getActorStateManager().get("items", ArrayList.class).block();
@@ -170,15 +171,16 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
                 item_set.put(item, temp + 1);
             }
         }
-        PaymentService paymentService = new PaymentService();
+//        PaymentService paymentService = new PaymentService();
         double total_cost = super.getActorStateManager().get("total_cost", Double.class).block();
-        Map<String, String> tempMap = paymentService.postPayment(super.getActorStateManager().get("user_id", String.class).block(), total_cost);
+        Map<String, String> tempMap = PaymentService.postPayment(super.getActorStateManager().get("user_id", String.class).block(), total_cost);
+        System.out.println("order:" + order_id + "belong to user:" + super.getActorStateManager().get("user_id", String.class).block() + "has totalcost of"+ total_cost);
         if(tempMap.get("credit").equals("-1")){paymentRes = "user don't hold enough credit";}
         else{
             String tempKey = "";
-            StockService stockService = new StockService();
             for(String key: item_set.keySet()){
-                tempMap = stockService.subtractStock(key, item_set.get(key));
+                System.out.println("item"+key);
+                tempMap = StockService.subtractItem(key, item_set.get(key));
                 if(Integer.parseInt(tempMap.get("stock"))<0){
                     stockRes = "Insufficient stock";
                     tempKey = key;
@@ -187,26 +189,30 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
             }
 //        recover stock dataset if checkout fails
             if(stockRes.equals("Insufficient stock")){
-                tempMap = paymentService.addFunds(super.getActorStateManager().get("user_id", String.class).block(), total_cost);
+                tempMap = PaymentService.addFunds(super.getActorStateManager().get("user_id", String.class).block(), total_cost);
                 for(String key: item_set.keySet()){
                     if(!key.equals(tempKey)){
-                        tempMap = stockService.addStock(key, item_set.get(key));
+                        tempMap = StockService.addItem(key, item_set.get(key));
                     }
                     else{
-                        tempMap = stockService.addStock(tempKey, item_set.get(tempKey));
+                        tempMap = StockService.addItem(tempKey, item_set.get(tempKey));
                         break;
                     }
                 }
             }
         }
+        if((stockRes + paymentRes).equals("Sufficient stockEnough credit")){super.getActorStateManager().set("paid", true).block();}
         this.unregisterReminder("myremind").block();
         return Mono.just(stockRes + paymentRes);
     }
 
     @Override
-    public Mono<String> set_status_false(String order_id) {
-        super.getActorStateManager().set("paid", false).block();
-        this.unregisterReminder("myremind").block();
+    public Mono<String> set_status(String order_id, String status) {
+        if(status.equals("false")) {
+            super.getActorStateManager().set("paid", false).block();
+        }else{
+            super.getActorStateManager().set("paid", true).block();
+        }
         return Mono.just("success");
     }
 

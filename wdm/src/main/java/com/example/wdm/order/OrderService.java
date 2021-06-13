@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 
 public class OrderService {
 
-    public Map<String, String> createOrderService(String user_id){
+    public static Map<String, String> createOrderService(String user_id){
         String order_id = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
@@ -31,7 +31,7 @@ public class OrderService {
         return mapResult;
     }
 
-    public Map<String, String> removeOrderService(String order_id){
+    public static Map<String, String> removeOrderService(String order_id){
         String result = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
@@ -94,7 +94,7 @@ public class OrderService {
         return mapResult;
     }
 
-    public Map<String, String> addOrderService(String order_id, String item_id){
+    public static Map<String, String> addOrderService(String order_id, String item_id){
         String result = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
@@ -114,7 +114,7 @@ public class OrderService {
         return mapResult;
     }
 
-    public Map<String, String> removeOrderService(String order_id, String item_id){
+    public static Map<String, String> removeOrderService(String order_id, String item_id){
         String result = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
@@ -143,7 +143,7 @@ public class OrderService {
 
             ActorId actorId = new ActorId(order_id);
             OrderActor actor = builder.build(actorId);
-            Future<String> future = threadPool.submit(new OrderCallActor(actorId.toString(), actor, 7));
+            Future<String> future = threadPool.submit(new OrderCallActor(actorId.toString(), actor, 6));
             result = future.get();
 
         } catch (Exception e) {
@@ -155,12 +155,11 @@ public class OrderService {
         return mapResult;
     }
 
-    public Map<String, String> checkout(String order_id){
+    public static Map<String, String> checkout(String order_id){
         String result = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
-
             ActorId actorId = new ActorId(order_id);
             OrderActor actor = builder.build(actorId);
             Future<String> future =
