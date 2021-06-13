@@ -5,8 +5,8 @@
 
 package com.example.wdm.payment;
 
+import com.example.wdm.DaprApplication;
 import io.dapr.actors.runtime.ActorRuntime;
-import io.dapr.examples.DaprApplication;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;

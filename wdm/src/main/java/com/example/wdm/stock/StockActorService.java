@@ -5,9 +5,9 @@
 
 package com.example.wdm.stock;
 
+import com.example.wdm.DaprApplication;
 import com.example.wdm.payment.PaymentActorImpl;
 import io.dapr.actors.runtime.ActorRuntime;
-import io.dapr.examples.DaprApplication;
 
 import java.time.Duration;
 
