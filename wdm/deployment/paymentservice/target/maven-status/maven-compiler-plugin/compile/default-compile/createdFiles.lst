@@ -2,9 +2,8 @@ com/example/wdm/WdmApplication.class
 com/example/wdm/order/OrderService.class
 com/example/wdm/HelloController.class
 com/example/wdm/DaprApplication.class
-com/example/wdm/stock/StockActorClient.class
 com/example/wdm/order/OrderActor.class
-com/example/wdm/stock/StockServiceController.class
+com/example/wdm/stock/StockController.class
 com/example/wdm/order/OrderCallActor.class
 com/example/wdm/stock/StockActorService.class
 com/example/wdm/demo/DemoActorService.class

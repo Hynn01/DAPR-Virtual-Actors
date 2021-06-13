@@ -9,7 +9,6 @@
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/order/OrderController.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/order/OrderActorService.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/WdmApplication.java
-/Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/stock/StockActorClient.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/DaprApplication.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/Exception/OrderException.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/stock/StockActorImpl.java
@@ -18,11 +17,11 @@
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/order/OrderCallActor.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/payment/PaymentActorImpl.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/demo/DemoActorClient.java
-/Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/stock/StockServiceController.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/stock/StockService.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/stock/StockCallActor.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/payment/PaymentActor.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/payment/PaymentActorClient.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/order/OrderService.java
+/Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/stock/StockController.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/demo/DemoActor.java
 /Users/ella01/Desktop/wdm/DAPR-Virtual-Actors/wdm/src/main/java/com/example/wdm/payment/PaymentController.java
