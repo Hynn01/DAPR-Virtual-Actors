@@ -1,13 +1,13 @@
----------------
+
 # Dapr Virtual Actors Microservice 
----------------
+
 Microservices implemented with Dapr Virtual Actors and Redis as backend database.
 
 ## Architecture
 ![](https://i.imgur.com/mujeWKs.jpg)
 
 ## Project Structure
-
+```
 ├── DaprApplication.java
 ├── Exception
 │   └── OrderException.java
@@ -32,8 +32,8 @@ Microservices implemented with Dapr Virtual Actors and Redis as backend database
     ├── StockActorService.java
     ├── StockCallActor.java
     ├── StockController.java
-    └── StockService.javas
-
+    └── StockService.java
+```
 
 ## Deployment
 ### run locally
@@ -109,6 +109,7 @@ curl -X POST 34.107.103.62:80/payment/create_user //EXTERNAL-IP of webapp + PORT
 
 ### invoke service
 **order:**
+```
 POST -X 127.0.0.1:8080/orders/create/{user_id}
 
 DELETE -X 127.0.0.1:8080/orders/remove/{order_id}
@@ -120,8 +121,10 @@ POST -X 127.0.0.1:8080/orders/addItem/{order_id}/{item_id}
 DELETE -X 127.0.0.1:8080/orders/removeItem/{order_id}/{item_id}
 
 POST -X 127.0.0.1:8080/orders/checkout/{order_id}
+```
 
 **stock:**
+```
 GET -X 127.0.0.1:8080/stock/find/{item_id}
 
 POST -X 127.0.0.1:8080/stock/subtract/{item_id}/{number}
@@ -129,10 +132,11 @@ POST -X 127.0.0.1:8080/stock/subtract/{item_id}/{number}
 POST -X 127.0.0.1:8080/stock/add/{item_id}/{number}
 
 POST -X 127.0.0.1:8080/stock/item/create/{price}
+```
 
 
 **payment:**
-
+```
 curl -X POST 127.0.0.1:8080/payment/create_user
 
 curl -X GET 127.0.0.1:8080/payment/find_user/{user_id}
@@ -144,3 +148,4 @@ curl -X POST 127.0.0.1:8080/payment/pay/{user_id}/{order_id}/{amount}
 curl -X GET 127.0.0.1:8080/payment/status/{order_id}
 
 curl -X POST 127.0.0.1:8080/payment/cancel/{user_id}/{order_id}
+```
