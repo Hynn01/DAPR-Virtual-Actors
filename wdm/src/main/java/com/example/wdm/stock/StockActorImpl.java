@@ -7,15 +7,20 @@ import io.dapr.actors.runtime.ActorRuntimeContext;
 import io.dapr.actors.runtime.Remindable;
 import io.dapr.utils.TypeRef;
 import reactor.core.publisher.Mono;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+/**
+ Implementation of the StockActor for the server side.
+ **/
 public class StockActorImpl extends AbstractActor implements StockActor, Remindable<Integer> {
 
+    /**
+     * Format to output date and time.
+     */
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     /**
@@ -26,6 +31,10 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
     public StockActorImpl(ActorRuntimeContext runtimeContext, ActorId id) {
         super(runtimeContext, id);
     }
+
+    /**
+     * Registers a reminder.
+     */
     @Override
     public void registerReminder() {
         super.registerReminder(
@@ -35,6 +44,10 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
                 Duration.ofSeconds(2)).block();
     }
 
+    /**
+     * Find the price and stock of an item
+     * @return price, stock
+     */
     @Override
     public Mono<String> findItem() {
         System.out.println("service: find item");
@@ -45,6 +58,11 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
         return Mono.just(res);
     }
 
+    /**
+     * Subtracts an item from stock by the amount specified.
+     * @param stock the amount of stock to be subtracted
+     * @return the latest stock after subtraction
+     */
     @Override
     public Mono<String> subtractItem(Integer stock) {
         System.out.println("service: subtract item");
@@ -55,6 +73,11 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
         return Mono.just(stock.toString());
     }
 
+    /**
+     * Adds an item from stock by the amount specified.
+     * @param stock the amount of stock to be added
+     * @return the latest stock after addition
+     */
     @Override
     public Mono<String> addItem(Integer stock) {
         System.out.println("service: add item");
@@ -65,6 +88,11 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
         return Mono.just(stock.toString());
     }
 
+    /**
+     * Create an item with its price, and stock is set to 0 by default.
+     * @param price the price of the item
+     * @return item id
+     */
     @Override
     public Mono<String> createItem(double price) {
         System.out.println("service:create item:"+this.getId());
@@ -75,11 +103,23 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
         return Mono.just(this.getId().toString());
     }
 
+    /**
+     * Method used to determine reminder's state type.
+     * @return Class for reminder's state.
+     */
     @Override
     public TypeRef<Integer> getStateType() {
         return TypeRef.INT;
     }
 
+    /**
+     * Method used be invoked for a reminder.
+     * @param reminderName The name of reminder provided during registration.
+     * @param state        The user state provided during registration.
+     * @param dueTime      The invocation due time provided during registration.
+     * @param period       The invocation period provided during registration.
+     * @return Mono result.
+     */
     @Override
     public Mono<Void> receiveReminder(String reminderName, Integer state, Duration dueTime, Duration period) {
         return Mono.fromRunnable(() -> {
@@ -90,7 +130,7 @@ public class StockActorImpl extends AbstractActor implements StockActor, Reminda
                     this.getId(), reminderName, state, utcNowAsString);
 
             // Handles the request by printing message.
-//      System.out.println(message);
+            // System.out.println(message);
         });
     }
 }

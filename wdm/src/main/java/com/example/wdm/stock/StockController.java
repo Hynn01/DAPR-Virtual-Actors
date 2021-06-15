@@ -17,8 +17,6 @@ public class StockController {
         result.put("stock", res.get("stock"));
         result.put("price", res.get("price"));
         return result.toJSONString();
-//        String json =  "{\"user_id\":"+result.get("user_id")+","+"\"credit\":"+result.get("credit")+"}";
-//        return json;
     }
     @PostMapping(value="/stock/subtract/{item_id}/{stock}",produces="application/json;charset=UTF-8")
     @ResponseBody

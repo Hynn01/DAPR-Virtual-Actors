@@ -4,9 +4,11 @@ import io.dapr.actors.ActorMethod;
 import io.dapr.actors.ActorType;
 import reactor.core.publisher.Mono;
 
+/**
+ * implementation of a StockActor.
+ */
 @ActorType(name = "StockActor")
 public interface StockActor {
-
 
     void registerReminder();
 
@@ -21,6 +23,5 @@ public interface StockActor {
 
     @ActorMethod(returns = String.class)
     Mono<String> createItem(double price);
-
 
 }
