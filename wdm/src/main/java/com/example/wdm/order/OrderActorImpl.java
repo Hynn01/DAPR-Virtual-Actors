@@ -28,13 +28,6 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
      */
     public OrderActorImpl (ActorRuntimeContext runtimeContext, ActorId id) {
         super(runtimeContext, id);
-
-//        super.registerActorTimer(
-//                null,
-//                "clock",
-//                "ping!",
-//                Duration.ofSeconds(2),
-//                Duration.ofSeconds(1)).block();
     }
 
     /**
@@ -50,8 +43,12 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
                 Duration.ofSeconds(2)).block();
     }
 
+    /**
+     * Use user id to create an  order
+     * @return order id / the same as orderactor id
+     */
     @Override
-    public Mono<String> create_order(String user_id) {
+    public Mono<String> createOrder(String user_id) {
         String result = "";
         System.out.println("service:create order:"+this.getId());
         ArrayList<String> items = new ArrayList<String>();
@@ -65,8 +62,12 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         return Mono.just(result);
     }
 
+    /**
+     * delete a order
+     * @return success or not.
+     */
     @Override
-    public Mono<String> remove_order(String order_id) {
+    public Mono<String> removeOrder(String order_id) {
         System.out.println("service delete order:");
         String result = "";
         String order_get = super.getActorStateManager().get("order_id", String.class).block();
@@ -85,8 +86,12 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         return Mono.just(result);
     }
 
+    /**
+     * Find order's information
+     * @return order's order id, payment status, items, user id, total cost.
+     */
     @Override
-    public Mono<String> find_order() {
+    public Mono<String> findOrder() {
         System.out.println("service: find order");
         String result = "";
         String order_get = super.getActorStateManager().get("order_id", String.class).block();
@@ -106,8 +111,13 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         return Mono.just(result);
     }
 
+    /**
+     * Add a specific item to the order
+     * @param item_id
+     * @return status
+     */
     @Override
-    public Mono<String> add_item(String item_id) {
+    public Mono<String> addItem(String item_id) {
         System.out.println("service: add item");
         String result = "";
         String order_get = super.getActorStateManager().get("order_id", String.class).block();
@@ -133,8 +143,13 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         return Mono.just(result);
     }
 
+    /**
+     * Remove a soecific item of a order
+     * @param item_id
+     * @return status
+     */
     @Override
-    public Mono<String> remove_item(String item_id) {
+    public Mono<String> removeItem(String item_id) {
         System.out.println("service: delete item");
         String result = "";
         String order_get = super.getActorStateManager().get("order_id", String.class).block();
@@ -157,8 +172,13 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
         return Mono.just(result);
     }
 
+    /**
+     * Checkour the order, if checkout not success. then add the stock back and add the credit back
+     * @param order_id
+     * @return status
+     */
     @Override
-    public Mono<String> checkout(String order_id) {
+    public Mono<String> checkOut(String order_id) {
         System.out.println("3 start checkout with " + super.getActorStateManager().get("order_id", String.class).block());
         String stockRes = "Sufficient stock";
         String paymentRes = "Enough credit";
@@ -171,7 +191,6 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
                 item_set.put(item, temp + 1);
             }
         }
-//        PaymentService paymentService = new PaymentService();
         double total_cost = super.getActorStateManager().get("total_cost", Double.class).block();
         Map<String, String> tempMap = PaymentService.postPayment(super.getActorStateManager().get("user_id", String.class).block(), total_cost);
         System.out.println("order:" + order_id + "belong to user:" + super.getActorStateManager().get("user_id", String.class).block() + "has totalcost of"+ total_cost);
@@ -221,15 +240,6 @@ public class OrderActorImpl extends AbstractActor implements OrderActor, Reminda
     public TypeRef<Integer> getStateType() {
         return TypeRef.INT;
     }
-//
-//    @Override
-//    public void clock(String message){
-//        Calendar utcNow = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-//        String utcNowAsString = DATE_FORMAT.format(utcNow.getTime());
-//        System.out.println("Server timer for actor "
-//                + super.getId() + ": "
-//                + (message == null ? "" : message + " @ " + utcNowAsString));
-//    }
 
     /**
      * Method used be invoked for a reminder.

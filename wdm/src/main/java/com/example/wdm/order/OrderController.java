@@ -17,8 +17,6 @@ public class OrderController {
         JSONObject result = new JSONObject();
         result.put("order_id", res.get("order_id"));
         return result.toJSONString();
-//        String json = "{\"order_id\":" + result.get("order_id") + "}";
-//        return json;
     }
 
     @DeleteMapping(value="/orders/remove/{order_id}",produces="application/json;charset=UTF-8")
@@ -28,8 +26,6 @@ public class OrderController {
         JSONObject result = new JSONObject();
         result.put("result", res.get("result"));
         return result.toJSONString();
-//        String result = mapResult.get("result");
-//        return result;
     }
 
     @RequestMapping(value="/orders/find/{order_id}",produces="application/json;charset=UTF-8")
@@ -37,9 +33,6 @@ public class OrderController {
     public String find_order(@PathVariable(name = "order_id") String order_id) {
 
         JSONObject result = new JSONObject();
-
-
-//        String result = "";
         Map<String,String> mapResult = OrderService.findOrderService(order_id);
         if(mapResult.get("status").equals("success")){
             result.put("order_id", mapResult.get("order_id"));
@@ -47,12 +40,9 @@ public class OrderController {
             result.put("items", mapResult.get("items"));
             result.put("user_id", mapResult.get("user_id"));
             result.put("total_cost", mapResult.get("total_cost"));
-//            result = "{\"order_id\":" + mapResult.get("order_id") + "," + "\"paid\":" + mapResult.get("paid") + "\"items\":"
-//                    + mapResult.get("items") + "\"user_id\":" + mapResult.get("user_id") + "\"total_cost\":" + mapResult.get("total_cost") + "}";
         }
         else{
             result.put("result", mapResult.get("result"));
-//            result = mapResult.get("result");
         }
         return result.toJSONString();
     }
@@ -64,9 +54,6 @@ public class OrderController {
         JSONObject result = new JSONObject();
         result.put("result", res.get("result"));
         return result.toJSONString();
-
-//        String result = mapResult.get("result");
-//        return result;
     }
 
     @DeleteMapping(value="/orders/removeItem/{order_id}/{item_id}",produces="application/json;charset=UTF-8")
@@ -77,8 +64,6 @@ public class OrderController {
         JSONObject result = new JSONObject();
         result.put("result", res.get("result"));
         return result.toJSONString();
-//        String result = mapResult.get("result");
-//        return result;
     }
 
     @PostMapping(value="/orders/checkout/{order_id}",produces="application/json;charset=UTF-8")
@@ -94,7 +79,6 @@ public class OrderController {
         result.put("result", stockResult);
         System.out.println("3"+stockResult);
         return result.toJSONString();
-//        return stockResult;
     }
 }
 

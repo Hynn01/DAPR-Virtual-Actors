@@ -27,14 +27,7 @@ public class OrderActorService {
      * @throws Exception An Exception.
      */
     public static void main(String[] args) throws Exception {
-//        Options options = new Options();
-//        options.addRequiredOption("p", "port", true, "Port the will listen to.");
-//
-//        CommandLineParser parser = new DefaultParser();
-//        CommandLine cmd = parser.parse(options, args);
-//
-//        // If port string is not valid, it will throw an exception.
-//        final int port = Integer.parseInt(cmd.getOptionValue("port"));
+
         final int port = 3000;
 
         // Idle timeout until actor instance is deactivated.

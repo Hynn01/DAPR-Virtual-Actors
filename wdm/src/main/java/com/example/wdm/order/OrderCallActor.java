@@ -15,12 +15,6 @@ public class OrderCallActor implements Callable {
         this.actor  = actor;
         this.type = type;
     }
-//    public OrderCallActor(String actorId, OrderActor actor, Integer type, Integer amount){
-//        this.actorId = actorId;
-//        this.actor = actor;
-//        this.type = type;
-//        this.amount = amount;
-//    }
     public OrderCallActor(String actorId, OrderActor actor, Integer type, String user_id){
         this.user_id = user_id;
         this.actorId = actorId;
@@ -48,27 +42,27 @@ public class OrderCallActor implements Callable {
         System.out.println("OrdercallActor");
         switch (type) {
             case 1: {
-                result = actor.create_order(user_id).block();
+                result = actor.createOrder(user_id).block();
                 break;
             }
             case 2:{
-                result=actor.remove_order(order_id).block();
+                result=actor.removeOrder(order_id).block();
                 break;
             }
             case 3:{
-                result = actor.find_order().block().toString();
+                result = actor.findOrder().block().toString();
                 break;
             }
             case 4:{
-                result = actor.add_item(item_id).block().toString();
+                result = actor.addItem(item_id).block().toString();
                 break;
             }
             case 5:{
-                result = actor.remove_item(item_id).block().toString();
+                result = actor.removeItem(item_id).block().toString();
                 break;
             }
             case 6:{
-                result = actor.checkout(order_id).block().toString();
+                result = actor.checkOut(order_id).block().toString();
                 break;
             }
             case 7: {

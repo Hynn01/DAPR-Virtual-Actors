@@ -98,7 +98,6 @@ public class OrderService {
         String result = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
-//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
             ActorId actorId = new ActorId(order_id);
@@ -134,22 +133,17 @@ public class OrderService {
     }
 
     public static Map<String,String> setOrderStatusFalseService(String order_id){
-
         String result = "";
-
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<OrderActor> builder = new ActorProxyBuilder(OrderActor.class, client);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
-
             ActorId actorId = new ActorId(order_id);
             OrderActor actor = builder.build(actorId);
             Future<String> future = threadPool.submit(new OrderCallActor(actorId.toString(), actor, 7));
             result = future.get();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         Map<String,String> mapResult=new HashMap<String,String>();
         mapResult.put("result",result);
         return mapResult;
