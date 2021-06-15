@@ -1,44 +1,21 @@
-/*
- * Copyright (c) Microsoft Corporation and Dapr Contributors.
- * Licensed under the MIT License.
- */
-
 package com.example.wdm.payment;
 
 import com.example.wdm.DaprApplication;
 import io.dapr.actors.runtime.ActorRuntime;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-
 import java.time.Duration;
 
 /**
  * Service for Actor runtime.
- * 1. Build and install jars:
- * mvn clean install
- * 2. cd to [repo-root]/examples
- * 3. Run the server:
- * dapr run --components-path ./components/actors --app-id demoactorservice --app-port 3000 \
- *   -- java -jar target/dapr-java-sdk-examples-exec.jar io.dapr.examples.actors.DemoActorService -p 3000
  */
 public class PaymentActorService {
 
   /**
    * The main method of this app.
-   * @param args The port the app will listen on.
+   * @param args Input arguments.
    * @throws Exception An Exception.
    */
   public static void main(String[] args) throws Exception {
-//    Options options = new Options();
-//    options.addRequiredOption("p", "port", true, "Port the will listen to.");
 
-//    CommandLineParser parser = new DefaultParser();
-//    CommandLine cmd = parser.parse(options, args);
-
-    // If port string is not valid, it will throw an exception.
-//    final int port = Integer.parseInt(cmd.getOptionValue("port"));
     final int port = 3002;
 
     // Idle timeout until actor instance is deactivated.

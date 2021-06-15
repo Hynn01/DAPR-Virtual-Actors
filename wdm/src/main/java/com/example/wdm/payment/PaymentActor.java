@@ -1,8 +1,3 @@
-/*
- * Copyright (c) Microsoft Corporation and Dapr Contributors.
- * Licensed under the MIT License.
- */
-
 package com.example.wdm.payment;
 
 import io.dapr.actors.ActorMethod;
@@ -10,7 +5,7 @@ import io.dapr.actors.ActorType;
 import reactor.core.publisher.Mono;
 
 /**
- * Example of implementation of an Actor.
+ * implementation of an PaymentActor.
  */
 @ActorType(name = "PaymentActor")
 public interface PaymentActor {
@@ -28,12 +23,5 @@ public interface PaymentActor {
 
   @ActorMethod(returns = String.class)
   Mono<String> addFunds(Double amount);
-
-  @ActorMethod(returns = String.class)
-  Mono<String> cancelPayment(String user_id, String order_id);
-
-  @ActorMethod(returns = String.class)
-  Mono<String> getPaymentStatus(String order_id);
-
 
 }

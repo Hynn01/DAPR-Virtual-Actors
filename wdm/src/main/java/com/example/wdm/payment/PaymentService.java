@@ -15,7 +15,13 @@ import java.util.concurrent.Future;
 
 public class PaymentService {
 
+    /**
+     * subtracts the amount of the order from the user’s credit (returns -1 if credit is not enough)
+     * @param user_id
+     * @param amount
+     */
     public static Map<String, String> postPayment(String user_id, Double amount) {
+
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
@@ -25,10 +31,9 @@ public class PaymentService {
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
                     threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 3, amount));
-
             credit = future.get();
 
-            System.out.println("Got user credit: "+credit);
+//            System.out.println("Got user credit: "+credit);
 
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
@@ -41,6 +46,11 @@ public class PaymentService {
     }
 
 
+    /**
+     * cancels payment made by a specific user for a specific order.
+     * @param user_id
+     * @param order_id
+     */
     public static String cancelPayment(String user_id, String order_id) {
 
         Map<String,String> orderResult=OrderService.findOrderService(order_id);
@@ -56,6 +66,11 @@ public class PaymentService {
 
     }
 
+    /**
+     * get payment status
+     * @param order_id
+     * @return the status of the payment (paid or not)
+     */
     public static String getPaymentStatus(String order_id) {
 
         Map<String,String> orderResult=OrderService.findOrderService(order_id);
@@ -63,6 +78,12 @@ public class PaymentService {
         return orderResult.get("paid");
     }
 
+    /**
+     * creates a user with 0 credit
+     * @param user_id
+     * @param amount
+     * @return “user_id” - the user’s id
+     */
     public static Map<String,String> addFunds(String user_id, Double amount) {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
@@ -76,7 +97,7 @@ public class PaymentService {
 
             credit = future.get();
 
-            System.out.println("Got user credit: "+credit);
+//            System.out.println("Got user credit: "+credit);
 
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
@@ -88,22 +109,22 @@ public class PaymentService {
         return result;
     }
 
+    /**
+     *  returns the user information
+     * @return “user_id” - the user’s id; “credit” - the user’s credit
+     */
     public static Map<String,String> createUser() {
         String user_id = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
-//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
-//            UUID uuid = UUID.randomUUID();
-//            ActorId actorId = new ActorId(uuid.toString());
             ActorId actorId = ActorId.createRandom();
             PaymentActor actor = builder.build(actorId);
             Future<String> future =
                     threadPool.submit(new PaymentCallActor(actorId.toString(), actor, 1));
 
             user_id = future.get();
-
-            System.out.println("Got user id:"+user_id);
+//            System.out.println("Got user id:"+user_id);
 
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
@@ -118,7 +139,6 @@ public class PaymentService {
         String credit = "";
         try (ActorClient client = new ActorClient()) {
             ActorProxyBuilder<PaymentActor> builder = new ActorProxyBuilder(PaymentActor.class, client);
-//            List<Thread> threads = new ArrayList<>(NUM_ACTORS);
             ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
             ActorId actorId = new ActorId(user_id);
@@ -128,12 +148,12 @@ public class PaymentService {
 
             credit = future.get();
 
-            System.out.println("Got user credit:"+credit);
+//            System.out.println("Got user credit:"+credit);
 
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        String json =  "{\"user_id\":"+user_id+","+"\"credit\":"+credit+"}";
+
         Map<String,String> result=new HashMap<String,String>();
         result.put("user_id",user_id);
         result.put("credit",credit);

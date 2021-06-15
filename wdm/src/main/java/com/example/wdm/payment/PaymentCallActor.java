@@ -1,7 +1,5 @@
 package com.example.wdm.payment;
 
-import com.sun.jdi.IntegerType;
-
 import java.util.concurrent.Callable;
 
 public class PaymentCallActor implements Callable {

@@ -1,13 +1,7 @@
-/*
- * Copyright (c) Microsoft Corporation and Dapr Contributors.
- * Licensed under the MIT License.
- */
-
 package com.example.wdm.payment;
 
 import io.dapr.actors.ActorId;
 import io.dapr.actors.runtime.AbstractActor;
-import io.dapr.actors.runtime.ActorRuntime;
 import io.dapr.actors.runtime.ActorRuntimeContext;
 import io.dapr.actors.runtime.Remindable;
 import io.dapr.utils.TypeRef;
@@ -20,7 +14,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 /**
- * Implementation of the DemoActor for the server side.
+ * Implementation of the PaymentActor for the server side.
  */
 public class PaymentActorImpl extends AbstractActor implements PaymentActor, Remindable<Integer> {
 
@@ -50,7 +44,10 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
             Duration.ofSeconds(2)).block();
   }
 
-
+  /**
+   * Use actor id to create a user.
+   * @return user id / the same as paymentactor id
+   */
   @Override
   public Mono<String> createUser() {
     System.out.println("service:create user:"+this.getId());
@@ -60,6 +57,11 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
     return Mono.just(this.getId().toString());
   }
 
+
+  /**
+   * Find user's credit
+   * @return user's credit
+   */
   @Override
   public Mono<String> findUser() {
     System.out.println("service: find user");
@@ -69,6 +71,12 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
     return  Mono.just(String.valueOf(credit));
   }
 
+  /**
+   * When user post a payment, the amount of payment should be substact from the user's credit.
+   * @param amount the amount of payment.
+   * If user's credit is enough, return the credit after the payment.
+   * If user's credit is not enough, return -1
+   */
   @Override
   public Mono<String> postPayment(Double amount) {
     System.out.println("service:postPayment");
@@ -76,6 +84,7 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
     System.out.println("credit_before: "+credit_before);
     if(credit_before - amount>=0){
       super.getActorStateManager().set("credit", credit_before - amount).block();
+      System.out.println("amount:"+amount);
       System.out.println("reduce");
     }
     Double credit_after = super.getActorStateManager().get("credit", Double.class).block();
@@ -90,6 +99,11 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
     }
   }
 
+  /**
+   * Add funds to the user's credit
+   * @param amount the amount of funds
+   * @return the user's credit after adding funds
+   */
   @Override
   public Mono<String> addFunds(Double amount) {
     System.out.println("service : add funds");
@@ -101,20 +115,6 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
     return Mono.just(String.valueOf(credit));
   }
 
-  @Override
-  public Mono<String> cancelPayment(String user_id, String order_id) {
-    System.out.println("service:cancelPayment");
-
-    return null;
-  }
-
-  @Override
-  public Mono<String> getPaymentStatus(String order_id) {
-    System.out.println("service:getPaymentStatus");
-
-    return null;
-  }
-
 
   /**
    * Method used to determine reminder's state type.
@@ -122,7 +122,6 @@ public class PaymentActorImpl extends AbstractActor implements PaymentActor, Rem
    */
   @Override
   public TypeRef<Integer> getStateType() {
-
     return TypeRef.INT;
   }
 
