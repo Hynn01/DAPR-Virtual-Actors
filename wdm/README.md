@@ -4,10 +4,40 @@
 Microservices implemented with Dapr Virtual Actors and Redis as backend database.
 
 ## Architecture
-![](https://i.imgur.com/mujeWKs.jpg)
+![image](https://user-images.githubusercontent.com/26082974/122112950-b7edf500-ce21-11eb-9367-c7583e1fde52.png)
+
 
 ## Project Structure
 ```
+/components/
+└── redis.yaml
+
+/deployment/
+├── docker-compose
+│   ├── deploy
+│   │   ├── components
+│   │   │   └── redis.yaml
+│   │   ├── orderservice
+│   │   │   ├── Dockerfile
+│   │   │   └── target
+│   │   ├── paymentservice
+│   │   │   ├── Dockerfile
+│   │   │   └── target
+│   │   ├── stockservice
+│   │   │   ├── Dockerfile
+│   │   │   └── target
+│   │   └── webapp
+│   │       ├── Dockerfile
+│   │       └── target
+│   └── docker-compose.yml
+└── k8s
+    ├── orderservice.yaml
+    ├── paymentservice.yaml
+    ├── redis.yaml
+    ├── stockservice.yaml
+    └── webapp.yaml
+
+/src/main/java/com/example/wdm/
 ├── DaprApplication.java
 ├── Exception
 │   └── OrderException.java
@@ -110,28 +140,28 @@ curl -X POST 34.107.103.62:80/payment/create_user //EXTERNAL-IP of webapp + PORT
 ### invoke service
 **order:**
 ```
-POST -X 127.0.0.1:8080/orders/create/{user_id}
+curl -X POST 127.0.0.1:8080/orders/create/{user_id}
 
-DELETE -X 127.0.0.1:8080/orders/remove/{order_id}
+curl -X DELETE 127.0.0.1:8080/orders/remove/{order_id}
 
-GET -X 127.0.0.1:8080/orders/find/{order_id}
+curl -X GET 127.0.0.1:8080/orders/find/{order_id}
 
-POST -X 127.0.0.1:8080/orders/addItem/{order_id}/{item_id}
+curl -X POST 127.0.0.1:8080/orders/addItem/{order_id}/{item_id}
 
-DELETE -X 127.0.0.1:8080/orders/removeItem/{order_id}/{item_id}
+curl -X DELETE 127.0.0.1:8080/orders/removeItem/{order_id}/{item_id}
 
-POST -X 127.0.0.1:8080/orders/checkout/{order_id}
+curl -X POST 127.0.0.1:8080/orders/checkout/{order_id}
 ```
 
 **stock:**
 ```
-GET -X 127.0.0.1:8080/stock/find/{item_id}
+curl -X GET 127.0.0.1:8080/stock/find/{item_id}
 
-POST -X 127.0.0.1:8080/stock/subtract/{item_id}/{number}
+curl -X POST 127.0.0.1:8080/stock/subtract/{item_id}/{number}
 
-POST -X 127.0.0.1:8080/stock/add/{item_id}/{number}
+curl -X POST 127.0.0.1:8080/stock/add/{item_id}/{number}
 
-POST -X 127.0.0.1:8080/stock/item/create/{price}
+curl -X POST 127.0.0.1:8080/stock/item/create/{price}
 ```
 
 
